@@ -223,7 +223,7 @@
 
 <script>
   // ── Configurações ─────────────────────────────────────────
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0FxA76Ih-aKskVUJMWsmSEDcRygGuApMBokzytqeNCzk9nXKPw7VBCr5bPYhOJSJ2uw/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxTPMr-jH9jhUfnExIIZKXU3-UabhjUPlNFJDLrUQc3ldwiEep3YSpe3K_fRlvLrMj7A/exec';
   const SENHA_ADMIN     = 'admin123'; // ← altere aqui
 
   // ── Login ─────────────────────────────────────────────────
@@ -318,18 +318,23 @@
   }
 
   // ── Marcar todas novas como em análise ───────────────────
-  async function marcarTodasLidas() {
+  function marcarTodasLidas() {
     const novas = fichasTodas.filter(f => f.status === 'nova');
     if (!novas.length) { alert('Não há fichas novas.'); return; }
     if (!confirm(`Marcar ${novas.length} ficha(s) como "Em análise"?`)) return;
-    for (const f of novas) { await atualizarStatus(f.id, 'analise'); }
+    // Atualiza localmente de imediato
+    novas.forEach(f => { f.status = 'analise'; });
     renderFichas();
+    // Salva no backend em paralelo, sem travar a UI
+    novas.forEach(f => {
+      fetch(`${APPS_SCRIPT_URL}?acao=status&id=${encodeURIComponent(f.id)}&status=analise`)
+        .catch(err => console.error('Erro ao salvar status:', err));
+    });
   }
 
-  async function atualizarStatus(id, status) {
-    await fetch(`${APPS_SCRIPT_URL}?acao=status&id=${encodeURIComponent(id)}&status=${encodeURIComponent(status)}`);
-    const f = fichasTodas.find(x => x.id === id);
-    if (f) f.status = status;
+  function salvarStatusBackend(id, status) {
+    fetch(`${APPS_SCRIPT_URL}?acao=status&id=${encodeURIComponent(id)}&status=${encodeURIComponent(status)}`)
+      .catch(err => console.error('Erro ao salvar status:', err));
   }
 
   // ── Modal ─────────────────────────────────────────────────
@@ -443,12 +448,16 @@
   }
 
   // ── Mudar status no modal ─────────────────────────────────
-  async function mudarStatus(novoStatus) {
+  function mudarStatus(novoStatus) {
     if (!fichaAtual) return;
-    await atualizarStatus(fichaAtual.id, novoStatus);
+    // Atualiza localmente de imediato (sem esperar o backend)
     fichaAtual.status = novoStatus;
+    const f = fichasTodas.find(x => x.id === fichaAtual.id);
+    if (f) f.status = novoStatus;
     document.getElementById('modal-corpo').innerHTML = renderDetalhe(fichaAtual);
     renderFichas();
+    // Salva no backend em background
+    salvarStatusBackend(fichaAtual.id, novoStatus);
   }
 
   // ── PDF ───────────────────────────────────────────────────

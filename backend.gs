@@ -188,27 +188,47 @@ function gerarProtocolo() {
 }
 
 function obterOuCriarAba() {
-  var ss    = SpreadsheetApp.openById(SHEET_ID);
-  var sheet = ss.getSheetByName(SHEET_NAME);
+  var ss      = SpreadsheetApp.openById(SHEET_ID);
+  var sheet   = ss.getSheetByName(SHEET_NAME);
+  var colunas = obterColunas();
 
   if (!sheet) {
-    var colunas = obterColunas();
-    sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow(colunas);
-
-    var hr = sheet.getRange(1, 1, 1, colunas.length);
-    hr.setBackground('#1a3c6e')
-      .setFontColor('#ffffff')
-      .setFontWeight('bold')
-      .setFontSize(9);
-    sheet.setFrozenRows(1);
-    sheet.setColumnWidth(1, 160);
-    sheet.setColumnWidth(2, 140);
-    sheet.setColumnWidth(3, 90);
-    sheet.setColumnWidth(4, 150);
-    sheet.setColumnWidth(9, 200);
+    return criarAba(ss, colunas);
   }
 
+  // Verifica se o cabeçalho bate com o schema atual
+  var ultimaCol  = sheet.getLastColumn();
+  var headerAtual = ultimaCol > 0
+    ? sheet.getRange(1, 1, 1, ultimaCol).getValues()[0]
+    : [];
+
+  var schemaOk = (headerAtual.length === colunas.length && headerAtual[0] === colunas[0] && headerAtual[8] === colunas[8]);
+
+  if (!schemaOk) {
+    // Renomeia a aba antiga como backup e cria uma nova com schema correto
+    var nomeBackup = SHEET_NAME + '_backup_' + new Date().getTime();
+    sheet.setName(nomeBackup);
+    return criarAba(ss, colunas);
+  }
+
+  return sheet;
+}
+
+function criarAba(ss, colunas) {
+  var sheet = ss.insertSheet(SHEET_NAME);
+  sheet.appendRow(colunas);
+
+  var hr = sheet.getRange(1, 1, 1, colunas.length);
+  hr.setBackground('#1a3c6e')
+    .setFontColor('#ffffff')
+    .setFontWeight('bold')
+    .setFontSize(9);
+  sheet.setFrozenRows(1);
+  sheet.setColumnWidth(1, 160);
+  sheet.setColumnWidth(2, 140);
+  sheet.setColumnWidth(3, 90);
+  sheet.setColumnWidth(4, 150);
+  sheet.setColumnWidth(9, 200);
   return sheet;
 }
 
