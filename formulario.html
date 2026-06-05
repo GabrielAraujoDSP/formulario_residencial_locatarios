@@ -825,7 +825,17 @@
         body: JSON.stringify(dados)
       });
 
-      const json = await res.json();
+      const textoResposta = await res.text();
+      let json;
+      try {
+        json = JSON.parse(textoResposta);
+      } catch (_) {
+        throw new Error(
+          'O Apps Script retornou uma resposta inesperada (não é JSON). ' +
+          'Verifique: 1) se a URL está correta no código, 2) se o script foi publicado como "Qualquer pessoa", ' +
+          '3) se o runtime V8 está ativado no projeto (Configurações do projeto → Runtime).'
+        );
+      }
       if (json.status === 'ok') {
         document.getElementById('num-protocolo').textContent = json.protocolo || '—';
         document.getElementById('overlay-sucesso').classList.add('ativo');
