@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Administrativo — Fichas de Locação</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #1a3c6e;
+      --primary-light: #2a5298;
+      --accent: #e8a020;
+      --danger: #c0392b;
+      --success: #27ae60;
+      --bg: #f0f3f9;
+      --card: #ffffff;
+      --border: #d0d7e3;
+      --text: #2c3e50;
+      --muted: #6b7a99;
+      --radius: 10px;
+    }
+
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
+
+    /* ─ Login ─ */
+    #tela-login {
+      display: flex; min-height: 100vh;
+      align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    }
+    .login-card {
+      background: #fff; border-radius: 16px; padding: 44px 40px;
+      max-width: 380px; width: 92%; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+    .login-card .icon { font-size: 2.8rem; }
+    .login-card h1 { font-size: 1.3rem; margin: 12px 0 6px; color: var(--primary); }
+    .login-card p { font-size: .85rem; color: var(--muted); margin-bottom: 24px; }
+    .login-card input {
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: .95rem; margin-bottom: 14px; font-family: inherit;
+    }
+    .login-card input:focus { outline: none; border-color: var(--primary-light); }
+    .btn-login {
+      width: 100%; padding: 13px; background: var(--primary); color: #fff;
+      border: none; border-radius: 8px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: background .2s;
+    }
+    .btn-login:hover { background: var(--primary-light); }
+    .erro-login { color: var(--danger); font-size: .83rem; margin-top: 8px; display: none; }
+
+    /* ─ App ─ */
+    #app { display: none; }
+
+    header {
+      background: var(--primary); color: #fff;
+      padding: 0 24px; height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-left h1 { font-size: 1.05rem; font-weight: 700; }
+    .badge-novas { background: var(--accent); color: #fff; font-size: .75rem; font-weight: 800; padding: 2px 8px; border-radius: 20px; }
+    .btn-sair { background: rgba(255,255,255,.15); border: none; color: #fff; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: .85rem; }
+    .btn-sair:hover { background: rgba(255,255,255,.25); }
+
+    .toolbar {
+      display: flex; gap: 12px; padding: 18px 24px; flex-wrap: wrap; align-items: center;
+      background: var(--card); border-bottom: 1px solid var(--border);
+    }
+    .toolbar input {
+      flex: 1; min-width: 200px; padding: 9px 14px;
+      border: 1.5px solid var(--border); border-radius: 7px; font-size: .9rem; font-family: inherit;
+    }
+    .toolbar input:focus { outline: none; border-color: var(--primary-light); }
+    .toolbar select { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: .9rem; font-family: inherit; background: #fff; }
+    .btn-marcar { background: var(--primary); color: #fff; border: none; padding: 9px 18px; border-radius: 7px; font-size: .88rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .btn-marcar:hover { background: var(--primary-light); }
+    .btn-atualizar { background: var(--card); color: var(--primary); border: 1.5px solid var(--primary); padding: 9px 14px; border-radius: 7px; font-size: .88rem; font-weight: 600; cursor: pointer; }
+    .btn-atualizar:hover { background: #eef2ff; }
+
+    main { padding: 20px 24px; max-width: 1200px; margin: 0 auto; }
+
+    .stats { display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
+    .stat-card { flex: 1; min-width: 130px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; text-align: center; }
+    .stat-card .num { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+    .stat-card .label { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+    .grid-fichas { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+
+    .card-ficha {
+      background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius);
+      padding: 18px; cursor: pointer; transition: box-shadow .2s, transform .15s;
+      position: relative; overflow: hidden;
+    }
+    .card-ficha:hover { box-shadow: 0 6px 24px rgba(0,0,0,.1); transform: translateY(-2px); }
+    .card-ficha .badge-status { position: absolute; top: 14px; right: 14px; font-size: .72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .4px; }
+    .badge-nova     { background: #fff3cd; color: #856404; }
+    .badge-analise  { background: #d1ecf1; color: #0c5460; }
+    .badge-concluida { background: #d4edda; color: #155724; }
+    .card-ficha h3 { font-size: .98rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; padding-right: 90px; }
+    .card-ficha .sub  { font-size: .82rem; color: var(--muted); }
+    .card-ficha .info { font-size: .82rem; margin-top: 6px; color: var(--text); }
+    .card-ficha .data { font-size: .78rem; color: var(--muted); margin-top: 6px; }
+
+    .sem-fichas { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .sem-fichas .icon { font-size: 3rem; }
+
+    /* ─ Modal ─ */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 200; overflow-y: auto; padding: 20px; }
+    .overlay.ativo { display: flex; align-items: flex-start; justify-content: center; }
+
+    .modal { background: #fff; border-radius: 14px; max-width: 800px; width: 100%; margin: auto; overflow: hidden; }
+    .modal-header { background: var(--primary); color: #fff; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .modal-header h2 { font-size: 1.05rem; font-weight: 700; }
+    .btn-fechar { background: rgba(255,255,255,.2); border: none; color: #fff; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+    .btn-fechar:hover { background: rgba(255,255,255,.35); }
+
+    .modal-corpo { padding: 24px; max-height: 68vh; overflow-y: auto; }
+
+    .secao-detalhe { margin-bottom: 20px; }
+    .secao-detalhe h4 { font-size: .8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: .5px; border-bottom: 1.5px solid var(--border); padding-bottom: 6px; margin-bottom: 12px; }
+    .detalhe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+    .campo-det label { font-size: .73rem; color: var(--muted); font-weight: 600; }
+    .campo-det span { display: block; font-size: .9rem; color: var(--text); }
+
+    .modal-footer { border-top: 1px solid var(--border); padding: 16px 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .btn-status { padding: 9px 16px; border: none; border-radius: 7px; font-size: .85rem; font-weight: 600; cursor: pointer; transition: opacity .2s; }
+    .btn-status:hover { opacity: .85; }
+    .btn-nova     { background: #fff3cd; color: #856404; }
+    .btn-analise  { background: #d1ecf1; color: #0c5460; }
+    .btn-concluida { background: var(--success); color: #fff; }
+    .btn-pdf { background: var(--danger); color: #fff; margin-left: auto; }
+
+    .spinner { width: 22px; height: 22px; border: 3px solid #c0cce8; border-top-color: var(--primary); border-radius: 50%; animation: spin .7s linear infinite; margin: 40px auto; display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+      .toolbar { padding: 12px 16px; }
+      main { padding: 14px 16px; }
+      .modal-corpo { max-height: 60vh; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login ─────────────────────────────────────────── -->
+<div id="tela-login">
+  <div class="login-card">
+    <div class="icon">🔐</div>
+    <h1>Painel Administrativo</h1>
+    <p>Fichas Cadastrais de Locação</p>
+    <input type="password" id="senha-input" placeholder="Senha de acesso" />
+    <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+    <p class="erro-login" id="erro-login">Senha incorreta.</p>
+  </div>
+</div>
+
+<!-- ── App ───────────────────────────────────────────── -->
+<div id="app">
+  <header>
+    <div class="header-left">
+      <span>🏠</span>
+      <h1>Fichas Cadastrais</h1>
+      <span class="badge-novas" id="badge-novas" style="display:none">0 novas</span>
+    </div>
+    <button class="btn-sair" onclick="sair()">Sair</button>
+  </header>
+
+  <div class="toolbar">
+    <input type="search" id="busca" placeholder="🔍  Buscar por nome ou CPF…" oninput="renderFichas()" />
+    <select id="filtro-status" onchange="renderFichas()">
+      <option value="">Todos os status</option>
+      <option value="nova">Nova</option>
+      <option value="analise">Em análise</option>
+      <option value="concluida">Concluída</option>
+    </select>
+    <select id="filtro-corretor" onchange="renderFichas()">
+      <option value="">Todos os corretores</option>
+      <option>Aline Alves</option>
+      <option>Fernando Macedo</option>
+      <option>Gabriel Araújo</option>
+      <option>Gabriel Medeiros</option>
+      <option>Michel Alves</option>
+      <option>Lívia Cordeiro</option>
+      <option>Victor Sutter</option>
+    </select>
+    <button class="btn-marcar" onclick="marcarTodasLidas()">✅ Marcar novas como "Em análise"</button>
+    <button class="btn-atualizar" onclick="carregarFichas()">🔄 Atualizar</button>
+  </div>
+
+  <main>
+    <div class="stats">
+      <div class="stat-card"><div class="num" id="stat-total">–</div><div class="label">Total</div></div>
+      <div class="stat-card"><div class="num" id="stat-nova">–</div><div class="label">Novas</div></div>
+      <div class="stat-card"><div class="num" id="stat-analise">–</div><div class="label">Em análise</div></div>
+      <div class="stat-card"><div class="num" id="stat-concluida">–</div><div class="label">Concluídas</div></div>
+    </div>
+    <div class="grid-fichas" id="grid-fichas">
+      <div class="sem-fichas" style="grid-column:1/-1"><div class="spinner"></div></div>
+    </div>
+  </main>
+</div>
+
+<!-- ── Modal ─────────────────────────────────────────── -->
+<div class="overlay" id="overlay-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-titulo">Detalhe da Ficha</h2>
+      <button class="btn-fechar" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-corpo" id="modal-corpo"></div>
+    <div class="modal-footer">
+      <button class="btn-status btn-nova"      onclick="mudarStatus('nova')">🟡 Nova</button>
+      <button class="btn-status btn-analise"   onclick="mudarStatus('analise')">🔵 Em análise</button>
+      <button class="btn-status btn-concluida" onclick="mudarStatus('concluida')">🟢 Concluída</button>
+      <button class="btn-status btn-pdf"       onclick="baixarPDF()">📥 Baixar PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Configurações ─────────────────────────────────────────
+  const APPS_SCRIPT_URL = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+  const SENHA_ADMIN     = 'admin123'; // ← altere aqui
+
+  // ── Login ─────────────────────────────────────────────────
+  function fazerLogin() {
+    if (document.getElementById('senha-input').value === SENHA_ADMIN) {
+      document.getElementById('tela-login').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      carregarFichas();
+    } else {
+      document.getElementById('erro-login').style.display = 'block';
+    }
+  }
+  document.getElementById('senha-input').addEventListener('keydown', e => { if (e.key === 'Enter') fazerLogin(); });
+
+  function sair() {
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('tela-login').style.display = 'flex';
+    document.getElementById('senha-input').value = '';
+  }
+
+  // ── Dados ─────────────────────────────────────────────────
+  let fichasTodas = [];
+  let fichaAtual  = null;
+
+  async function carregarFichas() {
+    document.getElementById('grid-fichas').innerHTML =
+      '<div class="sem-fichas" style="grid-column:1/-1"><div class="spinner"></div></div>';
+    try {
+      const res  = await fetch(`${APPS_SCRIPT_URL}?acao=listar`);
+      const json = await res.json();
+      fichasTodas = json.fichas || [];
+      renderFichas();
+    } catch (err) {
+      document.getElementById('grid-fichas').innerHTML =
+        `<div class="sem-fichas" style="grid-column:1/-1">
+          <div class="icon">⚠️</div>
+          <p style="margin-top:10px">Erro ao carregar fichas.<br>Verifique a URL do Apps Script.<br><small>${err.message}</small></p>
+        </div>`;
+    }
+  }
+
+  function renderFichas() {
+    const busca    = (document.getElementById('busca').value || '').toLowerCase();
+    const status   = document.getElementById('filtro-status').value;
+    const corretor = document.getElementById('filtro-corretor').value;
+
+    const lista = fichasTodas.filter(f => {
+      const okBusca    = !busca    || (f.nome||'').toLowerCase().includes(busca) || (f.cpf||'').includes(busca);
+      const okStatus   = !status   || f.status === status;
+      const okCorretor = !corretor || f.corretor === corretor;
+      return okBusca && okStatus && okCorretor;
+    });
+
+    const novas    = fichasTodas.filter(f => f.status === 'nova').length;
+    const analise  = fichasTodas.filter(f => f.status === 'analise').length;
+    const concl    = fichasTodas.filter(f => f.status === 'concluida').length;
+
+    document.getElementById('stat-total').textContent    = fichasTodas.length;
+    document.getElementById('stat-nova').textContent     = novas;
+    document.getElementById('stat-analise').textContent  = analise;
+    document.getElementById('stat-concluida').textContent = concl;
+
+    const badge = document.getElementById('badge-novas');
+    if (novas > 0) { badge.style.display = 'inline'; badge.textContent = `${novas} nova${novas>1?'s':''}`; }
+    else badge.style.display = 'none';
+
+    const grid = document.getElementById('grid-fichas');
+    if (!lista.length) {
+      grid.innerHTML = `<div class="sem-fichas" style="grid-column:1/-1"><div class="icon">📂</div><p style="margin-top:10px">Nenhuma ficha encontrada.</p></div>`;
+      return;
+    }
+    grid.innerHTML = lista.map(cardFicha).join('');
+  }
+
+  const classeStatus = s => s==='nova'?'badge-nova': s==='analise'?'badge-analise':'badge-concluida';
+  const labelStatus  = s => s==='nova'?'Nova': s==='analise'?'Em análise':'Concluída';
+
+  function esc(t) { return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function cardFicha(f) {
+    const tipoAssin = f.tipo_assinatura === 'digital' ? '💻 Digital' : f.tipo_assinatura === 'fisica' ? '🖨️ Física' : '—';
+    return `
+    <div class="card-ficha" onclick="abrirModal('${esc(f.id)}')">
+      <span class="badge-status ${classeStatus(f.status)}">${labelStatus(f.status)}</span>
+      <h3>${esc(f.nome)}</h3>
+      <div class="sub">CPF: ${esc(f.cpf)}</div>
+      <div class="info">🏢 Imóvel: <strong>${esc(f.codigo_imovel)}</strong></div>
+      <div class="info">👔 Corretor: ${esc(f.corretor)}</div>
+      <div class="info">🔒 Garantia: ${esc(f.tipo_garantia)} &nbsp;|&nbsp; Assinatura: ${tipoAssin}</div>
+      <div class="data">🗓 ${esc(f.data_envio)} &nbsp;|&nbsp; Prot: <strong>${esc(f.id)}</strong></div>
+    </div>`;
+  }
+
+  // ── Marcar todas novas como em análise ───────────────────
+  async function marcarTodasLidas() {
+    const novas = fichasTodas.filter(f => f.status === 'nova');
+    if (!novas.length) { alert('Não há fichas novas.'); return; }
+    if (!confirm(`Marcar ${novas.length} ficha(s) como "Em análise"?`)) return;
+    for (const f of novas) { await atualizarStatus(f.id, 'analise'); }
+    renderFichas();
+  }
+
+  async function atualizarStatus(id, status) {
+    await fetch(`${APPS_SCRIPT_URL}?acao=status&id=${encodeURIComponent(id)}&status=${encodeURIComponent(status)}`);
+    const f = fichasTodas.find(x => x.id === id);
+    if (f) f.status = status;
+  }
+
+  // ── Modal ─────────────────────────────────────────────────
+  function abrirModal(id) {
+    fichaAtual = fichasTodas.find(f => f.id === id);
+    if (!fichaAtual) return;
+    document.getElementById('modal-titulo').textContent = `Ficha: ${fichaAtual.nome || '—'}`;
+    document.getElementById('modal-corpo').innerHTML = renderDetalhe(fichaAtual);
+    document.getElementById('overlay-modal').classList.add('ativo');
+  }
+
+  function fecharModal() {
+    document.getElementById('overlay-modal').classList.remove('ativo');
+    fichaAtual = null;
+  }
+
+  document.getElementById('overlay-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('overlay-modal')) fecharModal();
+  });
+
+  const campo = (label, valor) =>
+    `<div class="campo-det"><label>${label}</label><span>${esc(valor)}</span></div>`;
+
+  function secaoDetalhe(titulo, campos) {
+    return `<div class="secao-detalhe"><h4>${titulo}</h4><div class="detalhe-grid">${campos.join('')}</div></div>`;
+  }
+
+  function renderDetalhe(f) {
+    let html = `<div style="margin-bottom:16px;">
+      <span class="badge-status ${classeStatus(f.status)}" style="font-size:.82rem;padding:4px 12px;border-radius:20px;">${labelStatus(f.status)}</span>
+      <span style="margin-left:14px;font-size:.82rem;color:var(--muted)">
+        Enviado em: <strong>${esc(f.data_envio)}</strong> &nbsp;|&nbsp; Protocolo: <strong>${esc(f.id)}</strong>
+      </span>
+    </div>`;
+
+    html += secaoDetalhe('🏢 Dados do Imóvel', [
+      campo('Corretor', f.corretor),
+      campo('Código do imóvel', f.codigo_imovel),
+      campo('Tem vaga', f.tem_vaga === 'sim' ? `Sim (${f.qtd_vagas} vaga${f.qtd_vagas>1?'s':''})` : 'Não'),
+      campo('Tipo de garantia', f.tipo_garantia),
+    ]);
+
+    html += secaoDetalhe('👤 Locatário Principal', [
+      campo('Nome', f.nome),
+      campo('CPF', f.cpf),
+      campo('Nascimento', f.nascimento),
+      campo('Estado civil', f.estado_civil),
+      campo('Nacionalidade', f.nacionalidade),
+      campo('Profissão', f.profissao),
+      campo('E-mail', f.email),
+      campo('Celular', f.celular),
+      campo('Endereço', f.endereco_atual),
+      campo('CEP', f.cep_atual),
+      campo('Cidade', f.cidade_atual),
+      campo('Estado', f.estado_atual),
+    ]);
+
+    html += secaoDetalhe('📞 Contato de Emergência', [
+      campo('Nome', f.emerg_nome),
+      campo('Celular', f.emerg_cel),
+      campo('Parentesco', f.emerg_parentesco),
+    ]);
+
+    if (f.tem_conjuge === 'sim') {
+      html += secaoDetalhe('💑 Cônjuge', [
+        campo('Nome', f.conj_nome),
+        campo('CPF', f.conj_cpf),
+        campo('Nascimento', f.conj_nascimento),
+        campo('Profissão', f.conj_profissao),
+        campo('E-mail', f.conj_email),
+        campo('Celular', f.conj_celular),
+      ]);
+    }
+
+    const qtd = parseInt(f.qtd_locatarios) || 0;
+    for (let i = 1; i <= qtd; i++) {
+      html += secaoDetalhe(`👥 Locatário Adicional #${i}`, [
+        campo('Nome', f[`loc${i}_nome`]),
+        campo('CPF', f[`loc${i}_cpf`]),
+        campo('Nascimento', f[`loc${i}_nascimento`]),
+        campo('Estado civil', f[`loc${i}_estado_civil`]),
+        campo('Profissão', f[`loc${i}_profissao`]),
+        campo('E-mail', f[`loc${i}_email`]),
+        campo('Celular', f[`loc${i}_celular`]),
+        campo('Endereço', f[`loc${i}_endereco`]),
+        campo('Cidade', f[`loc${i}_cidade`]),
+        campo('Emergência', `${f[`loc${i}_emerg_nome`] || '—'} — ${f[`loc${i}_emerg_cel`] || '—'}`),
+      ]);
+    }
+
+    html += secaoDetalhe('✍️ Assinatura', [
+      campo('Tipo escolhido', f.tipo_assinatura === 'digital' ? 'Digital (R$ 29,00/assinatura)' : 'Física (cartório)'),
+    ]);
+
+    // Arquivos
+    const links = [];
+    if (f.doc_identificacao_url)      links.push(`<a href="${esc(f.doc_identificacao_url)}" target="_blank" style="color:var(--primary)">📎 Doc. identif.</a>`);
+    if (f.comprovante_residencia_url)  links.push(`<a href="${esc(f.comprovante_residencia_url)}" target="_blank" style="color:var(--primary)">🏠 Comp. res.</a>`);
+    if (f.conj_doc_url)               links.push(`<a href="${esc(f.conj_doc_url)}" target="_blank" style="color:var(--primary)">👫 Doc. cônjuge</a>`);
+    for (let i = 1; i <= qtd; i++) {
+      if (f[`loc${i}_doc_id_url`])   links.push(`<a href="${esc(f[`loc${i}_doc_id_url`])}" target="_blank" style="color:var(--primary)">📎 Doc. loc.${i}</a>`);
+      if (f[`loc${i}_comp_res_url`]) links.push(`<a href="${esc(f[`loc${i}_comp_res_url`])}" target="_blank" style="color:var(--primary)">🏠 Res. loc.${i}</a>`);
+    }
+    if (links.length) {
+      html += `<div class="secao-detalhe"><h4>📂 Documentos no Drive</h4>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:.88rem;">${links.join('')}</div>
+      </div>`;
+    }
+
+    return html;
+  }
+
+  // ── Mudar status no modal ─────────────────────────────────
+  async function mudarStatus(novoStatus) {
+    if (!fichaAtual) return;
+    await atualizarStatus(fichaAtual.id, novoStatus);
+    fichaAtual.status = novoStatus;
+    document.getElementById('modal-corpo').innerHTML = renderDetalhe(fichaAtual);
+    renderFichas();
+  }
+
+  // ── PDF ───────────────────────────────────────────────────
+  function baixarPDF() {
+    if (!fichaAtual) return;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+    const L = 14, W = 182, lh = 7;
+    let y = 22;
+
+    function titulo(txt) {
+      if (y > 270) { doc.addPage(); y = 18; }
+      doc.setFillColor(26, 60, 110);
+      doc.rect(L, y - 5, W, 9, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(9); doc.setFont(undefined, 'bold');
+      doc.text(txt, L + 3, y + 1);
+      doc.setTextColor(0, 0, 0);
+      y += 12;
+    }
+
+    function linha(label, valor) {
+      if (y > 278) { doc.addPage(); y = 18; }
+      doc.setFontSize(8); doc.setFont(undefined, 'bold');
+      doc.text(String(label) + ':', L, y);
+      doc.setFont(undefined, 'normal');
+      const linhas = doc.splitTextToSize(String(valor || '—'), 120);
+      doc.text(linhas, L + 52, y);
+      y += lh * linhas.length;
+    }
+
+    function sep() { doc.setDrawColor(200,210,225); doc.line(L, y, L+W, y); y += 4; }
+
+    // Cabeçalho
+    doc.setFillColor(26, 60, 110);
+    doc.rect(0, 0, 210, 22, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(13); doc.setFont(undefined, 'bold');
+    doc.text('Ficha Cadastral de Locatário Residencial', 105, 11, { align: 'center' });
+    doc.setFontSize(8); doc.setFont(undefined, 'normal');
+    doc.text(`Protocolo: ${fichaAtual.id || '—'}   |   Data: ${fichaAtual.data_envio || '—'}   |   Status: ${labelStatus(fichaAtual.status)}`, 105, 18, { align: 'center' });
+    doc.setTextColor(0, 0, 0);
+    y = 32;
+
+    titulo('DADOS DO IMÓVEL');
+    linha('Corretor', fichaAtual.corretor);
+    linha('Código do imóvel', fichaAtual.codigo_imovel);
+    linha('Vaga de garagem', fichaAtual.tem_vaga === 'sim' ? `Sim — ${fichaAtual.qtd_vagas} vaga(s)` : 'Não');
+    linha('Tipo de garantia', fichaAtual.tipo_garantia);
+    sep();
+
+    titulo('LOCATÁRIO PRINCIPAL');
+    linha('Nome', fichaAtual.nome);
+    linha('CPF', fichaAtual.cpf);
+    linha('Nascimento', fichaAtual.nascimento);
+    linha('Estado civil', fichaAtual.estado_civil);
+    linha('Nacionalidade', fichaAtual.nacionalidade);
+    linha('Profissão', fichaAtual.profissao);
+    linha('E-mail', fichaAtual.email);
+    linha('Celular', fichaAtual.celular);
+    linha('Endereço', fichaAtual.endereco_atual);
+    linha('CEP', fichaAtual.cep_atual);
+    linha('Cidade / Estado', `${fichaAtual.cidade_atual || '—'} / ${fichaAtual.estado_atual || '—'}`);
+    sep();
+
+    titulo('CONTATO DE EMERGÊNCIA');
+    linha('Nome', fichaAtual.emerg_nome);
+    linha('Celular', fichaAtual.emerg_cel);
+    linha('Parentesco', fichaAtual.emerg_parentesco);
+    sep();
+
+    if (fichaAtual.tem_conjuge === 'sim') {
+      titulo('CÔNJUGE / COMPANHEIRO(A)');
+      linha('Nome', fichaAtual.conj_nome);
+      linha('CPF', fichaAtual.conj_cpf);
+      linha('Nascimento', fichaAtual.conj_nascimento);
+      linha('Profissão', fichaAtual.conj_profissao);
+      linha('E-mail', fichaAtual.conj_email);
+      linha('Celular', fichaAtual.conj_celular);
+      sep();
+    }
+
+    const qtd = parseInt(fichaAtual.qtd_locatarios) || 0;
+    for (let i = 1; i <= qtd; i++) {
+      titulo(`LOCATÁRIO ADICIONAL #${i}`);
+      linha('Nome', fichaAtual[`loc${i}_nome`]);
+      linha('CPF', fichaAtual[`loc${i}_cpf`]);
+      linha('Nascimento', fichaAtual[`loc${i}_nascimento`]);
+      linha('Estado civil', fichaAtual[`loc${i}_estado_civil`]);
+      linha('Profissão', fichaAtual[`loc${i}_profissao`]);
+      linha('E-mail', fichaAtual[`loc${i}_email`]);
+      linha('Celular', fichaAtual[`loc${i}_celular`]);
+      linha('Endereço', fichaAtual[`loc${i}_endereco`]);
+      linha('Cidade', fichaAtual[`loc${i}_cidade`]);
+      linha('Emergência (nome)', fichaAtual[`loc${i}_emerg_nome`]);
+      linha('Emergência (cel)', fichaAtual[`loc${i}_emerg_cel`]);
+      linha('Parentesco', fichaAtual[`loc${i}_emerg_parentesco`]);
+      sep();
+    }
+
+    titulo('ASSINATURA');
+    linha('Tipo', fichaAtual.tipo_assinatura === 'digital' ? 'Digital (R$ 29,00 por assinatura)' : 'Física (reconhecimento em cartório)');
+    sep();
+
+    // Rodapé em todas as páginas
+    const npages = doc.getNumberOfPages();
+    for (let p = 1; p <= npages; p++) {
+      doc.setPage(p);
+      doc.setFontSize(7); doc.setTextColor(140, 140, 140);
+      doc.text(`Gerado em ${new Date().toLocaleString('pt-BR')} — Pág. ${p}/${npages}`, 105, 292, { align: 'center' });
+    }
+
+    doc.save(`ficha_${(fichaAtual.nome||'locatario').replace(/\s+/g,'_')}_${fichaAtual.id||Date.now()}.pdf`);
+  }
+</script>
+</body>
+</html>

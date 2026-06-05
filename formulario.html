@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ficha Cadastral de Locatário</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #1a3c6e;
+      --primary-light: #2a5298;
+      --accent: #e8a020;
+      --danger: #c0392b;
+      --success: #27ae60;
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --border: #d0d7e3;
+      --text: #2c3e50;
+      --muted: #6b7a99;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header .logo { font-size: 28px; }
+    header h1 { font-size: 1.25rem; font-weight: 700; }
+    header p { font-size: 0.85rem; opacity: 0.8; }
+
+    .aviso {
+      background: #fff8e1;
+      border-left: 5px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px auto;
+      max-width: 860px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .aviso-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+    main { max-width: 860px; margin: 0 auto; padding: 0 16px 40px; }
+
+    .secao {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .secao-titulo {
+      background: var(--primary);
+      color: #fff;
+      padding: 12px 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .secao-corpo { padding: 20px; }
+
+    .grid { display: grid; gap: 16px; }
+    .g2 { grid-template-columns: repeat(2, 1fr); }
+    .g3 { grid-template-columns: repeat(3, 1fr); }
+    .g4 { grid-template-columns: repeat(4, 1fr); }
+    .span2 { grid-column: span 2; }
+    .span3 { grid-column: span 3; }
+    .span4 { grid-column: span 4; }
+
+    @media (max-width: 640px) {
+      .g2, .g3, .g4 { grid-template-columns: 1fr; }
+      .span2, .span3, .span4 { grid-column: span 1; }
+    }
+
+    label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+    label .obrig { color: var(--danger); }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      font-size: 0.93rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color .2s;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(42,82,152,.12);
+    }
+
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+    }
+    .upload-area:hover { border-color: var(--primary-light); background: #f0f4ff; }
+    .upload-area input[type=file] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-icon { font-size: 1.8rem; }
+    .upload-label { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+    .upload-name { font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-top: 6px; word-break: break-all; }
+    .upload-area.tem-arquivo { border-color: var(--success); background: #f0fff4; }
+
+    .radio-group { display: flex; gap: 20px; flex-wrap: wrap; padding-top: 6px; }
+    .radio-group label { display: flex; align-items: center; gap: 7px; font-size: 0.93rem; color: var(--text); font-weight: 500; cursor: pointer; }
+    .radio-group input[type=radio] { width: auto; accent-color: var(--primary); }
+
+    .separador { border: none; border-top: 1px dashed var(--border); margin: 20px 0; }
+
+    .bloco-locatario {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 16px;
+      background: #fafbfd;
+    }
+    .bloco-locatario-titulo {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Botões Sim/Não */
+    .btn-sim-nao {
+      display: flex;
+      gap: 14px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .btn-sim, .btn-nao {
+      padding: 13px 40px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: opacity .2s, transform .1s;
+    }
+    .btn-sim:active, .btn-nao:active { transform: scale(.97); }
+    .btn-sim { background: var(--success); color: #fff; }
+    .btn-sim:hover { opacity: .85; }
+    .btn-nao { background: var(--card); color: var(--text); border: 1.5px solid var(--border); }
+    .btn-nao:hover { background: #f0f0f5; }
+
+    /* Assinatura */
+    .assinatura-opcoes { display: flex; flex-direction: column; gap: 14px; }
+    .assinatura-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .assinatura-card:has(input:checked) {
+      border-color: var(--primary);
+      background: #eef3ff;
+    }
+    .assinatura-card input[type=radio] { width: auto; accent-color: var(--primary); margin-top: 3px; flex-shrink: 0; }
+    .assinatura-card-titulo { font-weight: 700; font-size: 0.95rem; color: var(--primary); }
+    .assinatura-card-desc { font-size: 0.85rem; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+    .tag-preco { display: inline-block; background: #fff3cd; color: #856404; font-size: .75rem; font-weight: 700; padding: 1px 8px; border-radius: 20px; margin-left: 8px; }
+
+    .btn-enviar {
+      width: 100%;
+      padding: 15px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-enviar:hover { background: var(--primary-light); }
+    .btn-enviar:active { transform: scale(.99); }
+    .btn-enviar:disabled { background: #aab; cursor: not-allowed; }
+
+    .overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay.ativo { display: flex; }
+    .modal-msg {
+      background: #fff;
+      border-radius: 14px;
+      padding: 40px 36px;
+      max-width: 420px;
+      width: 92%;
+      text-align: center;
+    }
+    .modal-msg .icon { font-size: 3rem; }
+    .modal-msg h2 { margin: 14px 0 8px; font-size: 1.3rem; color: var(--primary); }
+    .modal-msg p { color: var(--muted); font-size: 0.95rem; }
+
+    #status-envio {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: none;
+    }
+    #status-envio.enviando { display: flex; align-items: center; gap: 10px; background: #eef3ff; color: var(--primary); }
+    #status-envio.erro-msg { display: block; background: #fdecea; color: var(--danger); }
+
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid #aac0ee;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer { text-align: center; padding: 24px; font-size: 0.8rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🏠</div>
+  <div>
+    <h1>Ficha Cadastral de Locatário Residencial</h1>
+    <p>Preencha todos os campos obrigatórios e envie seus documentos</p>
+  </div>
+</header>
+
+<div class="aviso">
+  <span class="aviso-icon">⚠️</span>
+  <div>
+    <strong>Atenção:</strong> Todos os documentos enviados devem estar <strong>legíveis, sem cortes ou reflexos</strong>.
+    Fotos desfocadas ou com partes ilegíveis serão rejeitadas. Formatos aceitos: <strong>PDF, JPG e PNG</strong> (máx. 10 MB por arquivo).
+  </div>
+</div>
+
+<main>
+  <form id="form-ficha" novalidate>
+
+    <!-- ── DADOS DO IMÓVEL ───────────────────────────────── -->
+    <div class="secao">
+      <div class="secao-titulo">🏢 Dados do Imóvel</div>
+      <div class="secao-corpo">
+        <div class="grid g2">
+          <div>
+            <label>Corretor responsável <span class="obrig">*</span></label>
+            <select name="corretor" required>
+              <option value="">Selecione o corretor</option>
+              <option>Aline Alves</option>
+              <option>Fernando Macedo</option>
+              <option>Gabriel Araújo</option>
+              <option>Gabriel Medeiros</option>
+              <option>Michel Alves</option>
+              <option>Lívia Cordeiro</option>
+              <option>Victor Sutter</option>
+            </select>
+          </div>
+          <div>
+            <label>Código do imóvel <span class="obrig">*</span></label>
+            <input type="text" name="codigo_imovel" placeholder="Ex: AP-1042" required />
+          </div>
+          <div>
+            <label>Tem vaga de garagem? <span class="obrig">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="tem_vaga" value="nao" checked /> Não</label>
+              <label><input type="radio" name="tem_vaga" value="sim" /> Sim</label>
+            </div>
+          </div>
+          <div id="campo-qtd-vagas" style="display:none;">
+            <label>Quantidade de vagas <span class="obrig">*</span></label>
+            <input type="number" name="qtd_vagas" min="1" max="10" placeholder="Ex: 1" />
+          </div>
+          <div class="span2">
+            <label>Tipo de garantia <span class="obrig">*</span></label>
+            <div class="radio-group">
+              <label><input type="radio" name="tipo_garantia" value="Seguro fiança" required /> Seguro fiança</label>
+              <label><input type="radio" name="tipo_garantia" value="LOFT" /> LOFT</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LOCATÁRIO PRINCIPAL ────────────────────────────── -->
+    <div class="secao">
+      <div class="secao-titulo">👤 Locatário Principal</div>
+      <div class="secao-corpo">
+        <div class="grid g3">
+          <div class="span3">
+            <label>Nome completo <span class="obrig">*</span></label>
+            <input type="text" name="nome" required />
+          </div>
+          <div>
+            <label>CPF <span class="obrig">*</span></label>
+            <input type="text" name="cpf" placeholder="000.000.000-00" maxlength="14" data-mask="cpf" required />
+          </div>
+          <div>
+            <label>Data de nascimento <span class="obrig">*</span></label>
+            <input type="date" name="nascimento" required />
+          </div>
+          <div>
+            <label>Estado civil <span class="obrig">*</span></label>
+            <select name="estado_civil" required>
+              <option value="">Selecione</option>
+              <option>Solteiro(a)</option>
+              <option>Casado(a)</option>
+              <option>Divorciado(a)</option>
+              <option>Viúvo(a)</option>
+              <option>União estável</option>
+            </select>
+          </div>
+          <div>
+            <label>Nacionalidade <span class="obrig">*</span></label>
+            <input type="text" name="nacionalidade" value="Brasileiro(a)" required />
+          </div>
+          <div>
+            <label>Profissão <span class="obrig">*</span></label>
+            <input type="text" name="profissao" required />
+          </div>
+          <div>
+            <label>E-mail <span class="obrig">*</span></label>
+            <input type="email" name="email" required />
+          </div>
+          <div>
+            <label>Celular / WhatsApp <span class="obrig">*</span></label>
+            <input type="text" name="celular" placeholder="(00) 00000-0000" maxlength="15" data-mask="tel" required />
+          </div>
+
+          <hr class="separador span3" />
+
+          <div class="span3">
+            <label>Endereço atual completo <span class="obrig">*</span></label>
+            <input type="text" name="endereco_atual" placeholder="Rua, número, complemento, bairro" required />
+          </div>
+          <div>
+            <label>CEP <span class="obrig">*</span></label>
+            <input type="text" name="cep_atual" placeholder="00000-000" maxlength="9" data-mask="cep" required />
+          </div>
+          <div>
+            <label>Cidade <span class="obrig">*</span></label>
+            <input type="text" name="cidade_atual" required />
+          </div>
+          <div>
+            <label>Estado <span class="obrig">*</span></label>
+            <select name="estado_atual" required>
+              <option value="">UF</option>
+              <option>AC</option><option>AL</option><option>AM</option><option>AP</option>
+              <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+              <option>GO</option><option>MA</option><option>MG</option><option>MS</option>
+              <option>MT</option><option>PA</option><option>PB</option><option>PE</option>
+              <option>PI</option><option>PR</option><option>RJ</option><option>RN</option>
+              <option>RO</option><option>RR</option><option>RS</option><option>SC</option>
+              <option>SE</option><option>SP</option><option>TO</option>
+            </select>
+          </div>
+
+          <hr class="separador span3" />
+          <div class="span3"><strong style="font-size:.88rem;color:var(--primary)">📞 Contato de Emergência</strong></div>
+
+          <div>
+            <label>Nome completo <span class="obrig">*</span></label>
+            <input type="text" name="emerg_nome" required />
+          </div>
+          <div>
+            <label>Celular <span class="obrig">*</span></label>
+            <input type="text" name="emerg_cel" placeholder="(00) 00000-0000" maxlength="15" data-mask="tel" required />
+          </div>
+          <div>
+            <label>Grau de parentesco <span class="obrig">*</span></label>
+            <input type="text" name="emerg_parentesco" placeholder="Ex: Mãe, Pai, Irmão…" required />
+          </div>
+
+          <hr class="separador span3" />
+          <div class="span3"><strong style="font-size:.88rem;color:var(--primary)">📄 Documentos</strong></div>
+
+          <div>
+            <label>Documento de identificação (RG ou CNH) <span class="obrig">*</span></label>
+            <div class="upload-area" id="area-doc-id">
+              <div class="upload-icon">📎</div>
+              <div class="upload-label">PDF, JPG ou PNG — máx. 10 MB</div>
+              <div class="upload-name" id="nome-doc-id">Nenhum arquivo selecionado</div>
+              <input type="file" name="doc_identificacao" accept=".pdf,.jpg,.jpeg,.png" required data-preview="nome-doc-id" data-area="area-doc-id" />
+            </div>
+          </div>
+          <div>
+            <label>Comprovante de residência <span class="obrig">*</span></label>
+            <div class="upload-area" id="area-comp-res">
+              <div class="upload-icon">🏠</div>
+              <div class="upload-label">PDF, JPG ou PNG — máx. 10 MB</div>
+              <div class="upload-name" id="nome-comp-res">Nenhum arquivo selecionado</div>
+              <input type="file" name="comprovante_residencia" accept=".pdf,.jpg,.jpeg,.png" required data-preview="nome-comp-res" data-area="area-comp-res" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CÔNJUGE ─────────────────────────────────────────── -->
+    <div class="secao">
+      <div class="secao-titulo">💑 Cônjuge / Companheiro(a)</div>
+      <div class="secao-corpo">
+        <label style="margin-bottom:8px;">Há cônjuge ou companheiro(a)? <span class="obrig">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="tem_conjuge" value="nao" checked /> Não</label>
+          <label><input type="radio" name="tem_conjuge" value="sim" /> Sim</label>
+        </div>
+        <div id="campos-conjuge" style="display:none; margin-top:20px;">
+          <div class="grid g3">
+            <div class="span3">
+              <label>Nome completo <span class="obrig">*</span></label>
+              <input type="text" name="conj_nome" />
+            </div>
+            <div>
+              <label>CPF <span class="obrig">*</span></label>
+              <input type="text" name="conj_cpf" placeholder="000.000.000-00" maxlength="14" data-mask="cpf" />
+            </div>
+            <div>
+              <label>Data de nascimento <span class="obrig">*</span></label>
+              <input type="date" name="conj_nascimento" />
+            </div>
+            <div>
+              <label>Nacionalidade</label>
+              <input type="text" name="conj_nacionalidade" value="Brasileiro(a)" />
+            </div>
+            <div>
+              <label>Profissão</label>
+              <input type="text" name="conj_profissao" />
+            </div>
+            <div>
+              <label>E-mail</label>
+              <input type="email" name="conj_email" />
+            </div>
+            <div>
+              <label>Celular</label>
+              <input type="text" name="conj_celular" placeholder="(00) 00000-0000" maxlength="15" data-mask="tel" />
+            </div>
+            <div>
+              <label>Documento de identificação (RG ou CNH)</label>
+              <div class="upload-area" id="area-conj-doc">
+                <div class="upload-icon">📎</div>
+                <div class="upload-label">PDF, JPG ou PNG — máx. 10 MB</div>
+                <div class="upload-name" id="nome-conj-doc">Nenhum arquivo selecionado</div>
+                <input type="file" name="conj_doc" accept=".pdf,.jpg,.jpeg,.png" data-preview="nome-conj-doc" data-area="area-conj-doc" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LOCATÁRIOS ADICIONAIS (dinâmico) ──────────────── -->
+    <div id="container-locatarios-adicionais"></div>
+
+    <!-- Pergunta: adicionar outro locatário -->
+    <div class="secao" id="secao-pergunta-locatario">
+      <div class="secao-titulo">👥 Locatários Adicionais</div>
+      <div class="secao-corpo">
+        <p style="font-size:.95rem;">Deseja adicionar outro locatário ao contrato?</p>
+        <div class="btn-sim-nao">
+          <button type="button" class="btn-sim" onclick="adicionarLocatario()">✔ Sim</button>
+          <button type="button" class="btn-nao" onclick="finalizarLocatarios()">✘ Não</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TIPO DE ASSINATURA (oculto até finalizar locatários) -->
+    <div class="secao" id="secao-assinatura" style="display:none;">
+      <div class="secao-titulo">✍️ Tipo de Assinatura</div>
+      <div class="secao-corpo">
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:16px;">Escolha como deseja assinar o contrato:</p>
+        <div class="assinatura-opcoes">
+          <label class="assinatura-card">
+            <input type="radio" name="tipo_assinatura" value="fisica" required />
+            <div>
+              <div class="assinatura-card-titulo">🖨️ Assinatura Física</div>
+              <div class="assinatura-card-desc">
+                Imprima o contrato, assine e leve ao cartório para reconhecimento de firma de todas as partes.
+                Sem custo adicional por este canal.
+              </div>
+            </div>
+          </label>
+          <label class="assinatura-card">
+            <input type="radio" name="tipo_assinatura" value="digital" />
+            <div>
+              <div class="assinatura-card-titulo">💻 Assinatura Digital <span class="tag-preco">R$ 29,00 / assinatura</span></div>
+              <div class="assinatura-card-desc">
+                Assine pelo celular ou computador com total validade jurídica (Lei nº 14.063/2020 e MP 2.200-2/2001).
+                Cobrado R$ 29,00 por assinatura de cada parte envolvida no contrato.
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DECLARAÇÃO FINAL (oculto até finalizar locatários) -->
+    <div class="secao" id="secao-declaracao" style="display:none;">
+      <div class="secao-titulo">📋 Declaração Final</div>
+      <div class="secao-corpo">
+        <p style="font-size:.9rem;line-height:1.8;margin-bottom:16px;">
+          Declaro que todas as informações prestadas neste formulário são verdadeiras e que os documentos enviados são
+          autênticos. Estou ciente de que a prestação de informações falsas pode acarretar responsabilidade civil e criminal,
+          bem como a rescisão imediata do contrato de locação.
+        </p>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <input type="checkbox" name="aceite_declaracao" id="aceite-declaracao" style="width:auto;accent-color:var(--primary);" required />
+          <span style="font-size:.9rem;font-weight:600;">Li e concordo com a declaração acima. <span class="obrig">*</span></span>
+        </label>
+      </div>
+    </div>
+
+    <div id="status-envio"></div>
+
+    <div id="btn-enviar-wrap" style="display:none;">
+      <button type="submit" class="btn-enviar" id="btn-enviar">
+        <span>📤</span> Enviar Ficha Cadastral
+      </button>
+    </div>
+
+  </form>
+</main>
+
+<div class="overlay" id="overlay-sucesso">
+  <div class="modal-msg">
+    <div class="icon">✅</div>
+    <h2>Ficha enviada com sucesso!</h2>
+    <p>Seus dados foram recebidos. Nossa equipe entrará em contato em breve.<br /><br />
+    Guarde o número do seu protocolo:</p>
+    <p style="font-size:1.5rem;font-weight:800;color:var(--primary);margin-top:10px;" id="num-protocolo">—</p>
+  </div>
+</div>
+
+<footer>Formulário de Locação Residencial &copy; 2025</footer>
+
+<script>
+  // ── Configuração ────────────────────────────────────────────
+  const APPS_SCRIPT_URL = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+
+  // ── Máscaras ────────────────────────────────────────────────
+  function aplicarMascara(val, tipo) {
+    const d = val.replace(/\D/g, '');
+    if (tipo === 'cpf') {
+      return d.slice(0,3) + (d.length>3?'.':'') + d.slice(3,6) + (d.length>6?'.':'') + d.slice(6,9) + (d.length>9?'-':'') + d.slice(9,11);
+    }
+    if (tipo === 'tel') {
+      if (d.length <= 10)
+        return '(' + d.slice(0,2) + (d.length>2?') ':'') + d.slice(2,6) + (d.length>6?'-':'') + d.slice(6,10);
+      return '(' + d.slice(0,2) + ') ' + d.slice(2,7) + '-' + d.slice(7,11);
+    }
+    if (tipo === 'cep') return d.slice(0,5) + (d.length>5?'-':'') + d.slice(5,8);
+    return val;
+  }
+
+  document.addEventListener('input', e => {
+    const tipo = e.target.dataset.mask;
+    if (!tipo) return;
+    e.target.value = aplicarMascara(e.target.value, tipo);
+  });
+
+  // ── Upload preview ───────────────────────────────────────────
+  document.addEventListener('change', e => {
+    if (e.target.type !== 'file') return;
+    const previewId = e.target.dataset.preview;
+    const areaId = e.target.dataset.area;
+    if (previewId) {
+      const el = document.getElementById(previewId);
+      if (el) el.textContent = e.target.files[0] ? e.target.files[0].name : 'Nenhum arquivo selecionado';
+    }
+    if (areaId) {
+      const area = document.getElementById(areaId);
+      if (area) area.classList.toggle('tem-arquivo', !!e.target.files[0]);
+    }
+  });
+
+  // ── Vaga condicional ─────────────────────────────────────────
+  document.querySelectorAll('input[name="tem_vaga"]').forEach(r => {
+    r.addEventListener('change', () => {
+      const campo = document.getElementById('campo-qtd-vagas');
+      const mostrar = r.value === 'sim' && r.checked;
+      campo.style.display = mostrar ? 'block' : 'none';
+      campo.querySelector('input').required = mostrar;
+    });
+  });
+
+  // ── Cônjuge condicional ─────────────────────────────────────
+  document.querySelectorAll('input[name="tem_conjuge"]').forEach(r => {
+    r.addEventListener('change', () => {
+      const mostrar = r.value === 'sim' && r.checked;
+      document.getElementById('campos-conjuge').style.display = mostrar ? 'block' : 'none';
+      document.querySelectorAll('#campos-conjuge [required]').forEach(el => el.required = mostrar);
+    });
+  });
+
+  // ── Locatários adicionais ───────────────────────────────────
+  let contadorLocatarios = 0;
+
+  const UFs = ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO'];
+
+  // Retorna apenas o conteúdo interno (grid), sem wrapper .bloco-locatario
+  function gerarBlocoLocatario(n) {
+    const ufOpts = UFs.map(u => `<option>${u}</option>`).join('');
+    return `
+      <div class="grid g3">
+        <div class="span3">
+          <label>Nome completo <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_nome" required />
+        </div>
+        <div>
+          <label>CPF <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_cpf" placeholder="000.000.000-00" maxlength="14" data-mask="cpf" required />
+        </div>
+        <div>
+          <label>Nascimento <span class="obrig">*</span></label>
+          <input type="date" name="loc${n}_nascimento" required />
+        </div>
+        <div>
+          <label>Estado civil</label>
+          <select name="loc${n}_estado_civil">
+            <option value="">Selecione</option>
+            <option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option>
+            <option>Viúvo(a)</option><option>União estável</option>
+          </select>
+        </div>
+        <div>
+          <label>Nacionalidade</label>
+          <input type="text" name="loc${n}_nacionalidade" value="Brasileiro(a)" />
+        </div>
+        <div>
+          <label>Profissão</label>
+          <input type="text" name="loc${n}_profissao" />
+        </div>
+        <div>
+          <label>E-mail <span class="obrig">*</span></label>
+          <input type="email" name="loc${n}_email" required />
+        </div>
+        <div>
+          <label>Celular <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_celular" placeholder="(00) 00000-0000" maxlength="15" data-mask="tel" required />
+        </div>
+        <div class="span3">
+          <label>Endereço atual completo</label>
+          <input type="text" name="loc${n}_endereco" placeholder="Rua, número, complemento, bairro" />
+        </div>
+        <div>
+          <label>CEP</label>
+          <input type="text" name="loc${n}_cep" placeholder="00000-000" maxlength="9" data-mask="cep" />
+        </div>
+        <div>
+          <label>Cidade</label>
+          <input type="text" name="loc${n}_cidade" />
+        </div>
+        <div>
+          <label>Estado</label>
+          <select name="loc${n}_uf"><option value="">UF</option>${ufOpts}</select>
+        </div>
+        <hr class="separador span3" />
+        <div class="span3"><strong style="font-size:.85rem;color:var(--primary)">📞 Contato de Emergência</strong></div>
+        <div>
+          <label>Nome completo</label>
+          <input type="text" name="loc${n}_emerg_nome" />
+        </div>
+        <div>
+          <label>Celular</label>
+          <input type="text" name="loc${n}_emerg_cel" placeholder="(00) 00000-0000" maxlength="15" data-mask="tel" />
+        </div>
+        <div>
+          <label>Grau de parentesco</label>
+          <input type="text" name="loc${n}_emerg_parentesco" />
+        </div>
+        <hr class="separador span3" />
+        <div>
+          <label>Documento de identificação (RG/CNH) <span class="obrig">*</span></label>
+          <div class="upload-area" id="area-loc${n}-doc">
+            <div class="upload-icon">📎</div>
+            <div class="upload-label">PDF, JPG ou PNG</div>
+            <div class="upload-name" id="nome-loc${n}-doc">Nenhum arquivo selecionado</div>
+            <input type="file" name="loc${n}_doc_id" accept=".pdf,.jpg,.jpeg,.png" required
+              data-preview="nome-loc${n}-doc" data-area="area-loc${n}-doc" />
+          </div>
+        </div>
+        <div>
+          <label>Comprovante de residência <span class="obrig">*</span></label>
+          <div class="upload-area" id="area-loc${n}-res">
+            <div class="upload-icon">🏠</div>
+            <div class="upload-label">PDF, JPG ou PNG</div>
+            <div class="upload-name" id="nome-loc${n}-res">Nenhum arquivo selecionado</div>
+            <input type="file" name="loc${n}_comp_res" accept=".pdf,.jpg,.jpeg,.png" required
+              data-preview="nome-loc${n}-res" data-area="area-loc${n}-res" />
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function adicionarLocatario() {
+    contadorLocatarios++;
+    const n = contadorLocatarios;
+    const container = document.getElementById('container-locatarios-adicionais');
+
+    const secao = document.createElement('div');
+    secao.className = 'secao';
+    secao.innerHTML =
+      `<div class="secao-titulo">👥 Locatário Adicional #${n}</div>` +
+      `<div class="secao-corpo">${gerarBlocoLocatario(n)}</div>`;
+    container.appendChild(secao);
+
+    // Garante que a pergunta fique sempre após os blocos
+    const pergunta = document.getElementById('secao-pergunta-locatario');
+    container.after(pergunta);
+
+    secao.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function finalizarLocatarios() {
+    document.getElementById('secao-pergunta-locatario').style.display = 'none';
+    document.getElementById('secao-assinatura').style.display = 'block';
+    document.getElementById('secao-declaracao').style.display = 'block';
+    document.getElementById('btn-enviar-wrap').style.display = 'block';
+    document.getElementById('secao-assinatura').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── Converter arquivo para base64 ────────────────────────────
+  function fileParaBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ── Envio do formulário ──────────────────────────────────────
+  document.getElementById('form-ficha').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    if (!document.getElementById('aceite-declaracao').checked) {
+      alert('Por favor, leia e aceite a declaração final antes de enviar.');
+      return;
+    }
+
+    const tipoAssinatura = document.querySelector('input[name="tipo_assinatura"]:checked');
+    if (!tipoAssinatura) {
+      alert('Por favor, escolha o tipo de assinatura.');
+      return;
+    }
+
+    const btn = document.getElementById('btn-enviar');
+    const statusDiv = document.getElementById('status-envio');
+    btn.disabled = true;
+    statusDiv.className = 'enviando';
+    statusDiv.innerHTML = '<div class="spinner"></div><span>Enviando ficha, aguarde… (isso pode levar alguns segundos)</span>';
+
+    try {
+      const dados = {};
+
+      // Campos de texto/select/radio/checkbox
+      const formData = new FormData(this);
+      for (const [key, value] of formData.entries()) {
+        if (!(value instanceof File)) {
+          dados[key] = value;
+        }
+      }
+
+      dados.qtd_locatarios = contadorLocatarios;
+
+      // Converter arquivos para base64
+      const fileInputs = this.querySelectorAll('input[type=file]');
+      for (const input of fileInputs) {
+        if (input.files && input.files[0]) {
+          const file = input.files[0];
+          dados[input.name + '_b64']  = await fileParaBase64(file);
+          dados[input.name + '_nome'] = file.name;
+          dados[input.name + '_tipo'] = file.type;
+        }
+      }
+
+      // Enviar como JSON com Content-Type text/plain (evita CORS preflight no Apps Script)
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(dados)
+      });
+
+      const json = await res.json();
+      if (json.status === 'ok') {
+        document.getElementById('num-protocolo').textContent = json.protocolo || '—';
+        document.getElementById('overlay-sucesso').classList.add('ativo');
+        this.reset();
+        document.getElementById('container-locatarios-adicionais').innerHTML = '';
+        contadorLocatarios = 0;
+        document.getElementById('secao-pergunta-locatario').style.display = 'block';
+        document.getElementById('secao-assinatura').style.display = 'none';
+        document.getElementById('secao-declaracao').style.display = 'none';
+        document.getElementById('btn-enviar-wrap').style.display = 'none';
+        statusDiv.className = '';
+        statusDiv.textContent = '';
+      } else {
+        throw new Error(json.message || 'Erro desconhecido');
+      }
+    } catch (err) {
+      statusDiv.className = 'erro-msg';
+      statusDiv.textContent = '❌ Erro ao enviar: ' + err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
