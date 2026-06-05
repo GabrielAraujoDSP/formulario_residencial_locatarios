@@ -17,8 +17,8 @@
  */
 
 // ── Configurações — altere aqui ───────────────────────────────────
-var SHEET_ID   = 'COLE_AQUI_O_ID_DA_PLANILHA';
-var FOLDER_ID  = 'COLE_AQUI_O_ID_DA_PASTA';
+var SHEET_ID   = '1dy3gQq8bPE4C8ODpZSf2Hv9x4_Q2-g6SjPDXqrdgygw';
+var FOLDER_ID  = '1xHIZomIVqtFTx8OWRNC3ZpoJa9yLjfO-';
 var SHEET_NAME = 'Fichas';
 
 // ── Colunas fixas (locatários adicionais são adicionados abaixo) ──
