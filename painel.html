@@ -24,7 +24,7 @@
 
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
 
-    /* ─ Login ─ */
+    /* ── Login ── */
     #tela-login {
       display: flex; min-height: 100vh;
       align-items: center; justify-content: center;
@@ -51,7 +51,7 @@
     .btn-login:hover { background: var(--primary-light); }
     .erro-login { color: var(--danger); font-size: .83rem; margin-top: 8px; display: none; }
 
-    /* ─ App ─ */
+    /* ── App ── */
     #app { display: none; }
 
     header {
@@ -59,6 +59,7 @@
       padding: 0 24px; height: 58px;
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
     }
     .header-left { display: flex; align-items: center; gap: 12px; }
     .header-left h1 { font-size: 1.05rem; font-weight: 700; }
@@ -67,86 +68,307 @@
     .btn-sair:hover { background: rgba(255,255,255,.25); }
 
     .toolbar {
-      display: flex; gap: 12px; padding: 18px 24px; flex-wrap: wrap; align-items: center;
+      display: flex; gap: 10px; padding: 12px 20px; flex-wrap: wrap; align-items: center;
       background: var(--card); border-bottom: 1px solid var(--border);
     }
-    .toolbar input {
-      flex: 1; min-width: 200px; padding: 9px 14px;
-      border: 1.5px solid var(--border); border-radius: 7px; font-size: .9rem; font-family: inherit;
+    .toolbar input[type=search] {
+      flex: 1; min-width: 180px; padding: 8px 13px;
+      border: 1.5px solid var(--border); border-radius: 7px; font-size: .88rem; font-family: inherit;
     }
-    .toolbar input:focus { outline: none; border-color: var(--primary-light); }
-    .toolbar select { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: .9rem; font-family: inherit; background: #fff; }
-    .btn-marcar { background: var(--primary); color: #fff; border: none; padding: 9px 18px; border-radius: 7px; font-size: .88rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .toolbar input[type=search]:focus { outline: none; border-color: var(--primary-light); }
+    .toolbar select { padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 7px; font-size: .88rem; font-family: inherit; background: #fff; }
+    .btn-marcar { background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: 7px; font-size: .85rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
     .btn-marcar:hover { background: var(--primary-light); }
-    .btn-atualizar { background: var(--card); color: var(--primary); border: 1.5px solid var(--primary); padding: 9px 14px; border-radius: 7px; font-size: .88rem; font-weight: 600; cursor: pointer; }
+    .btn-atualizar { background: var(--card); color: var(--primary); border: 1.5px solid var(--primary); padding: 8px 13px; border-radius: 7px; font-size: .85rem; font-weight: 600; cursor: pointer; }
     .btn-atualizar:hover { background: #eef2ff; }
 
-    main { padding: 20px 24px; max-width: 1200px; margin: 0 auto; }
+    main { padding: 14px 16px; }
 
-    .stats { display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
-    .stat-card { flex: 1; min-width: 130px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; text-align: center; }
-    .stat-card .num { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
-    .stat-card .label { font-size: .78rem; color: var(--muted); margin-top: 2px; }
-
-    .grid-fichas { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
-
-    .card-ficha {
-      background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius);
-      padding: 18px; cursor: pointer; transition: box-shadow .2s, transform .15s;
-      position: relative; overflow: hidden;
+    /* ── Stats ── */
+    .stats { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .stat-card {
+      flex: 1; min-width: 90px; background: var(--card);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; text-align: center;
     }
-    .card-ficha:hover { box-shadow: 0 6px 24px rgba(0,0,0,.1); transform: translateY(-2px); }
-    .card-ficha .badge-status { position: absolute; top: 14px; right: 14px; font-size: .72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .4px; }
-    .badge-nova     { background: #fff3cd; color: #856404; }
-    .badge-analise  { background: #d1ecf1; color: #0c5460; }
-    .badge-concluida { background: #d4edda; color: #155724; }
-    .card-ficha h3 { font-size: .98rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; padding-right: 90px; }
-    .card-ficha .sub  { font-size: .82rem; color: var(--muted); }
-    .card-ficha .info { font-size: .82rem; margin-top: 6px; color: var(--text); }
-    .card-ficha .data { font-size: .78rem; color: var(--muted); margin-top: 6px; }
+    .stat-card .num { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+    .stat-card .lbl { font-size: .7rem; color: var(--muted); margin-top: 2px; }
 
-    .sem-fichas { text-align: center; padding: 60px 20px; color: var(--muted); }
-    .sem-fichas .icon { font-size: 3rem; }
+    /* ── Kanban ── */
+    .kanban-board {
+      display: flex; gap: 12px;
+      overflow-x: auto; padding-bottom: 12px;
+      align-items: flex-start;
+    }
+    .kanban-board::-webkit-scrollbar { height: 5px; }
+    .kanban-board::-webkit-scrollbar-track { background: #e0e6f0; border-radius: 3px; }
+    .kanban-board::-webkit-scrollbar-thumb { background: #aab8d0; border-radius: 3px; }
 
-    /* ─ Modal ─ */
-    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 200; overflow-y: auto; padding: 20px; }
-    .overlay.ativo { display: flex; align-items: flex-start; justify-content: center; }
+    .kanban-col {
+      flex: 0 0 264px;
+      background: #eaecf4;
+      border-radius: 10px;
+      display: flex; flex-direction: column;
+      max-height: calc(100vh - 240px);
+      min-height: 180px;
+    }
 
-    .modal { background: #fff; border-radius: 14px; max-width: 800px; width: 100%; margin: auto; overflow: hidden; }
-    .modal-header { background: var(--primary); color: #fff; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; }
-    .modal-header h2 { font-size: 1.05rem; font-weight: 700; }
-    .btn-fechar { background: rgba(255,255,255,.2); border: none; color: #fff; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
-    .btn-fechar:hover { background: rgba(255,255,255,.35); }
+    .col-header {
+      padding: 10px 13px; border-radius: 10px 10px 0 0;
+      display: flex; align-items: center; justify-content: space-between;
+      font-weight: 700; font-size: .88rem; color: #fff; flex-shrink: 0;
+    }
+    .col-count {
+      background: rgba(255,255,255,.3); font-size: .72rem;
+      font-weight: 800; padding: 1px 7px; border-radius: 20px;
+    }
 
-    .modal-corpo { padding: 24px; max-height: 68vh; overflow-y: auto; }
+    .col-nova      .col-header { background: #b45309; }
+    .col-analise   .col-header { background: #1d4ed8; }
+    .col-concluida .col-header { background: #047857; }
+    .col-reprovada .col-header { background: #b91c1c; }
+    .col-arquivada .col-header { background: #475569; }
 
-    .secao-detalhe { margin-bottom: 20px; }
-    .secao-detalhe h4 { font-size: .8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: .5px; border-bottom: 1.5px solid var(--border); padding-bottom: 6px; margin-bottom: 12px; }
-    .detalhe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
-    .campo-det label { font-size: .73rem; color: var(--muted); font-weight: 600; }
-    .campo-det span { display: block; font-size: .9rem; color: var(--text); }
+    .col-cards {
+      flex: 1; overflow-y: auto; padding: 8px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .col-cards::-webkit-scrollbar { width: 4px; }
+    .col-cards::-webkit-scrollbar-thumb { background: #c0cad8; border-radius: 2px; }
 
-    .modal-footer { border-top: 1px solid var(--border); padding: 16px 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-    .btn-status { padding: 9px 16px; border: none; border-radius: 7px; font-size: .85rem; font-weight: 600; cursor: pointer; transition: opacity .2s; }
-    .btn-status:hover { opacity: .85; }
-    .btn-nova     { background: #fff3cd; color: #856404; }
-    .btn-analise  { background: #d1ecf1; color: #0c5460; }
-    .btn-concluida { background: var(--success); color: #fff; }
-    .btn-pdf { background: var(--danger); color: #fff; margin-left: auto; }
+    .col-vazia { text-align: center; padding: 22px 10px; color: var(--muted); font-size: .8rem; }
+    .col-vazia .vi { font-size: 1.6rem; }
 
-    .spinner { width: 22px; height: 22px; border: 3px solid #c0cce8; border-top-color: var(--primary); border-radius: 50%; animation: spin .7s linear infinite; margin: 40px auto; display: block; }
+    /* ── Kanban card ── */
+    .card-k {
+      background: #fff; border-radius: 8px;
+      border: 1px solid rgba(0,0,0,.09);
+      box-shadow: 0 1px 3px rgba(0,0,0,.07);
+      transition: box-shadow .15s;
+    }
+    .card-k:hover { box-shadow: 0 4px 12px rgba(0,0,0,.13); }
+
+    .card-k-body {
+      padding: 11px 12px; cursor: pointer;
+      border-radius: 8px 8px 0 0;
+    }
+    .card-k-body:hover { background: #f5f8ff; }
+
+    .card-k-nome { font-size: .9rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; line-height: 1.3; }
+    .card-k-cpf  { font-size: .72rem; color: var(--muted); margin-bottom: 6px; }
+    .card-k-info { font-size: .76rem; color: var(--text); line-height: 1.75; }
+    .card-k-data {
+      font-size: .68rem; color: var(--muted); margin-top: 6px;
+      padding-top: 5px; border-top: 1px solid #f0f2f8;
+    }
+
+    .card-k-footer {
+      padding: 7px 9px 9px;
+      background: #f7f8fc;
+      border-top: 1px solid #eaecf4;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .mover-label { font-size: .65rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+
+    .mover-btns { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
+
+    .btn-mv {
+      font-size: .66rem; font-weight: 700; padding: 2px 7px;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: opacity .15s, transform .1s; white-space: nowrap;
+    }
+    .btn-mv:hover { opacity: .8; transform: scale(1.04); }
+    .btn-mv:active { transform: scale(.95); }
+    .bm-nova      { background: #fef3c7; color: #78350f; }
+    .bm-analise   { background: #dbeafe; color: #1e3a8a; }
+    .bm-concluida { background: #d1fae5; color: #064e3b; }
+    .bm-reprovada { background: #fee2e2; color: #7f1d1d; }
+    .bm-arquivada { background: #e2e8f0; color: #334155; }
+
+    .card-k-acoes { display: flex; gap: 5px; justify-content: flex-end; }
+
+    .btn-ac {
+      font-size: .7rem; padding: 3px 9px; border-radius: 5px;
+      border: none; cursor: pointer; font-weight: 600; transition: opacity .15s;
+    }
+    .btn-ac:hover { opacity: .8; }
+    .btn-editar  { background: #ede9fe; color: #4c1d95; }
+    .btn-excluir { background: #fee2e2; color: #7f1d1d; }
+    .btn-ver     { background: #e0f2fe; color: #075985; }
+
+    .spinner {
+      width: 22px; height: 22px; border: 3px solid #c0cce8;
+      border-top-color: var(--primary); border-radius: 50%;
+      animation: spin .7s linear infinite; display: block;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── Overlay / Modal base ── */
+    .overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.55); z-index: 200;
+      overflow-y: auto; padding: 20px;
+    }
+    .overlay.ativo { display: flex; align-items: flex-start; justify-content: center; }
+
+    .modal {
+      background: #fff; border-radius: 14px;
+      max-width: 800px; width: 100%; margin: auto; overflow: hidden;
+    }
+    .modal-header {
+      background: var(--primary); color: #fff;
+      padding: 16px 22px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h2 { font-size: 1rem; font-weight: 700; }
+    .btn-fechar {
+      background: rgba(255,255,255,.2); border: none; color: #fff;
+      width: 30px; height: 30px; border-radius: 6px; cursor: pointer;
+      font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    }
+    .btn-fechar:hover { background: rgba(255,255,255,.35); }
+
+    .modal-corpo { padding: 22px; max-height: 65vh; overflow-y: auto; }
+
+    .modal-footer {
+      border-top: 1px solid var(--border); padding: 12px 22px;
+      display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    }
+
+    /* ── Modal Detalhe ── */
+    .secao-detalhe { margin-bottom: 18px; }
+    .secao-detalhe h4 {
+      font-size: .76rem; font-weight: 700; color: var(--primary);
+      text-transform: uppercase; letter-spacing: .5px;
+      border-bottom: 1.5px solid var(--border); padding-bottom: 5px; margin-bottom: 10px;
+    }
+    .detalhe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 9px; }
+    .campo-det label { font-size: .7rem; color: var(--muted); font-weight: 600; }
+    .campo-det span  { display: block; font-size: .87rem; color: var(--text); }
+
+    .btn-pdf { background: var(--danger); color: #fff; border: none; padding: 9px 18px; border-radius: 7px; font-size: .85rem; font-weight: 600; cursor: pointer; margin-left: auto; }
+    .btn-pdf:hover { opacity: .87; }
+
+    /* ── Modal Edição ── */
+    #overlay-editar .modal { max-width: 660px; }
+
+    .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .eg-span2 { grid-column: span 2; }
+    .edit-sec {
+      grid-column: span 2; font-size: .76rem; font-weight: 700;
+      color: var(--primary); text-transform: uppercase; letter-spacing: .5px;
+      border-bottom: 1.5px solid var(--border); padding-bottom: 5px;
+      margin-top: 6px;
+    }
+    .edit-grupo label { display: block; font-size: .72rem; font-weight: 600; color: var(--muted); margin-bottom: 3px; }
+    .edit-grupo input, .edit-grupo select {
+      width: 100%; padding: 7px 10px;
+      border: 1.5px solid var(--border); border-radius: 6px;
+      font-size: .88rem; color: var(--text); font-family: inherit;
+    }
+    .edit-grupo input:focus, .edit-grupo select:focus { outline: none; border-color: var(--primary-light); }
+
+    .btn-salvar   { background: var(--success); color: #fff; border: none; padding: 9px 22px; border-radius: 7px; font-size: .9rem; font-weight: 700; cursor: pointer; }
+    .btn-salvar:hover { opacity: .87; }
+    .btn-cancelar { background: #f1f3f7; color: var(--text); border: 1.5px solid var(--border); padding: 9px 18px; border-radius: 7px; font-size: .88rem; font-weight: 600; cursor: pointer; }
+    .btn-cancelar:hover { background: #e4e8f0; }
+
+    /* ── Botão trocar interface ── */
+    .btn-trocar {
+      background: #f1f5f9; color: var(--primary);
+      border: 1.5px solid var(--border); padding: 8px 13px;
+      border-radius: 7px; font-size: .85rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap; transition: background .15s;
+    }
+    .btn-trocar:hover { background: #e2e8f0; }
+    .btn-dashboard {
+      background: var(--accent); color: #fff;
+      border: none; padding: 8px 16px;
+      border-radius: 7px; font-size: .85rem; font-weight: 700;
+      cursor: pointer; white-space: nowrap; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: opacity .15s;
+    }
+    .btn-dashboard:hover { opacity: .85; }
+
+    /* ── View abas ── */
+    .aba-nav {
+      display: flex; border-bottom: 2px solid var(--border);
+      margin-bottom: 18px; overflow-x: auto; flex-shrink: 0;
+    }
+    .aba-btn {
+      flex: 1; min-width: 120px; padding: 11px 10px;
+      border: none; background: none; cursor: pointer;
+      font-size: .85rem; font-weight: 600; color: var(--muted);
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+      transition: color .15s, border-color .15s; white-space: nowrap;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .aba-btn:hover { color: var(--primary); }
+    .ab-count {
+      font-size: .7rem; background: var(--border); color: var(--text);
+      padding: 1px 7px; border-radius: 20px; font-weight: 700;
+    }
+    .aba-nova.ativa      { color: #b45309; border-bottom-color: #b45309; }
+    .aba-nova.ativa .ab-count      { background: #b45309; color: #fff; }
+    .aba-analise.ativa   { color: #1d4ed8; border-bottom-color: #1d4ed8; }
+    .aba-analise.ativa .ab-count   { background: #1d4ed8; color: #fff; }
+    .aba-concluida.ativa { color: #047857; border-bottom-color: #047857; }
+    .aba-concluida.ativa .ab-count { background: #047857; color: #fff; }
+    .aba-reprovada.ativa { color: #b91c1c; border-bottom-color: #b91c1c; }
+    .aba-reprovada.ativa .ab-count { background: #b91c1c; color: #fff; }
+    .aba-arquivada.ativa { color: #475569; border-bottom-color: #475569; }
+    .aba-arquivada.ativa .ab-count { background: #475569; color: #fff; }
+
+    /* ── Cards grandes (view abas) ── */
+    .grid-fichas {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .card-g {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: box-shadow .2s, transform .15s;
+    }
+    .card-g:hover { box-shadow: 0 6px 20px rgba(0,0,0,.1); transform: translateY(-2px); }
+    .card-g-body { padding: 16px 18px; cursor: pointer; }
+    .card-g-body:hover { background: #f8faff; }
+    .card-g-badge {
+      display: inline-block; font-size: .72rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px; margin-bottom: 8px;
+    }
+    .card-g-nome { font-size: 1.02rem; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+    .card-g-cpf  { font-size: .82rem; color: var(--muted); margin-bottom: 8px; }
+    .card-g-info { font-size: .85rem; color: var(--text); line-height: 1.8; }
+    .card-g-data {
+      font-size: .76rem; color: var(--muted); margin-top: 10px;
+      padding-top: 8px; border-top: 1px solid var(--border);
+    }
+    .card-g-footer {
+      padding: 10px 14px; background: #f7f8fc;
+      border-top: 1px solid #eaecf4;
+    }
+    .sem-fichas-aba {
+      grid-column: 1 / -1; text-align: center;
+      padding: 54px 20px; color: var(--muted);
+    }
+    .sem-fichas-aba .icon { font-size: 2.5rem; margin-bottom: 10px; }
+
     @media (max-width: 600px) {
-      .toolbar { padding: 12px 16px; }
-      main { padding: 14px 16px; }
-      .modal-corpo { max-height: 60vh; }
+      .toolbar { padding: 10px 12px; }
+      main { padding: 10px 12px; }
+      .modal-corpo { max-height: 58vh; }
+      .edit-grid { grid-template-columns: 1fr; }
+      .eg-span2, .edit-sec { grid-column: span 1; }
+      .aba-btn { min-width: 90px; font-size: .78rem; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── Login ─────────────────────────────────────────── -->
+<!-- ── Login ───────────────────────────────────────────────── -->
 <div id="tela-login">
   <div class="login-card">
     <div class="icon">🔐</div>
@@ -158,7 +380,7 @@
   </div>
 </div>
 
-<!-- ── App ───────────────────────────────────────────── -->
+<!-- ── App ─────────────────────────────────────────────────── -->
 <div id="app">
   <header>
     <div class="header-left">
@@ -170,14 +392,8 @@
   </header>
 
   <div class="toolbar">
-    <input type="search" id="busca" placeholder="🔍  Buscar por nome ou CPF…" oninput="renderFichas()" />
-    <select id="filtro-status" onchange="renderFichas()">
-      <option value="">Todos os status</option>
-      <option value="nova">Nova</option>
-      <option value="analise">Em análise</option>
-      <option value="concluida">Concluída</option>
-    </select>
-    <select id="filtro-corretor" onchange="renderFichas()">
+    <input type="search" id="busca" placeholder="🔍  Buscar por nome ou CPF…" oninput="renderKanban()" />
+    <select id="filtro-corretor" onchange="renderKanban()">
       <option value="">Todos os corretores</option>
       <option>Aline Alves</option>
       <option>Fernando Macedo</option>
@@ -187,24 +403,40 @@
       <option>Lívia Cordeiro</option>
       <option>Victor Sutter</option>
     </select>
-    <button class="btn-marcar" onclick="marcarTodasLidas()">✅ Marcar novas como "Em análise"</button>
+    <button class="btn-marcar" onclick="marcarTodasLidas()">✅ Novas → Em análise</button>
     <button class="btn-atualizar" onclick="carregarFichas()">🔄 Atualizar</button>
+    <button class="btn-trocar" id="btn-trocar" onclick="trocarInterface()">⊞ Trocar interface</button>
+    <a class="btn-dashboard" href="dashboard.html">📊 Dashboard</a>
   </div>
 
   <main>
     <div class="stats">
-      <div class="stat-card"><div class="num" id="stat-total">–</div><div class="label">Total</div></div>
-      <div class="stat-card"><div class="num" id="stat-nova">–</div><div class="label">Novas</div></div>
-      <div class="stat-card"><div class="num" id="stat-analise">–</div><div class="label">Em análise</div></div>
-      <div class="stat-card"><div class="num" id="stat-concluida">–</div><div class="label">Concluídas</div></div>
+      <div class="stat-card"><div class="num" id="s-total">–</div><div class="lbl">Total</div></div>
+      <div class="stat-card"><div class="num" id="s-nova">–</div><div class="lbl">Novos</div></div>
+      <div class="stat-card"><div class="num" id="s-analise">–</div><div class="lbl">Em análise</div></div>
+      <div class="stat-card"><div class="num" id="s-concluida">–</div><div class="lbl">Concluídos</div></div>
+      <div class="stat-card"><div class="num" id="s-reprovada">–</div><div class="lbl">Reprovados</div></div>
+      <div class="stat-card"><div class="num" id="s-arquivada">–</div><div class="lbl">Arquivados</div></div>
     </div>
-    <div class="grid-fichas" id="grid-fichas">
-      <div class="sem-fichas" style="grid-column:1/-1"><div class="spinner"></div></div>
+
+    <!-- View: Kanban -->
+    <div id="view-kanban">
+      <div class="kanban-board" id="kanban-board">
+        <div style="display:flex;align-items:center;gap:12px;padding:40px;width:100%">
+          <div class="spinner"></div><span style="color:var(--muted)">Carregando fichas…</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- View: Abas -->
+    <div id="view-abas" style="display:none;">
+      <div class="aba-nav" id="aba-nav"></div>
+      <div class="grid-fichas" id="grid-abas"></div>
     </div>
   </main>
 </div>
 
-<!-- ── Modal ─────────────────────────────────────────── -->
+<!-- ── Modal: Detalhe da ficha ─────────────────────────────── -->
 <div class="overlay" id="overlay-modal">
   <div class="modal">
     <div class="modal-header">
@@ -213,22 +445,141 @@
     </div>
     <div class="modal-corpo" id="modal-corpo"></div>
     <div class="modal-footer">
-      <button class="btn-status btn-nova"      onclick="mudarStatus('nova')">🟡 Nova</button>
-      <button class="btn-status btn-analise"   onclick="mudarStatus('analise')">🔵 Em análise</button>
-      <button class="btn-status btn-concluida" onclick="mudarStatus('concluida')">🟢 Concluída</button>
-      <button class="btn-status btn-pdf"       onclick="baixarPDF()">📥 Baixar PDF</button>
+      <button class="btn-pdf" onclick="baixarPDF()">📥 Baixar PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Editar ficha ─────────────────────────────────── -->
+<div class="overlay" id="overlay-editar">
+  <div class="modal" style="max-width:660px">
+    <div class="modal-header">
+      <h2>✏️ Editar Ficha</h2>
+      <button class="btn-fechar" onclick="fecharEditar()">✕</button>
+    </div>
+    <div class="modal-corpo">
+      <div class="edit-grid">
+        <div class="edit-sec">🏢 Imóvel</div>
+        <div class="edit-grupo">
+          <label>Corretor</label>
+          <select id="e-corretor">
+            <option>Aline Alves</option><option>Fernando Macedo</option>
+            <option>Gabriel Araújo</option><option>Gabriel Medeiros</option>
+            <option>Michel Alves</option><option>Lívia Cordeiro</option><option>Victor Sutter</option>
+          </select>
+        </div>
+        <div class="edit-grupo">
+          <label>Código do imóvel</label>
+          <input type="text" id="e-codigo_imovel" />
+        </div>
+        <div class="edit-grupo">
+          <label>Tipo de garantia</label>
+          <select id="e-tipo_garantia">
+            <option value="Seguro fiança">Seguro fiança</option>
+            <option value="LOFT">LOFT</option>
+          </select>
+        </div>
+
+        <div class="edit-sec">👤 Locatário Principal</div>
+        <div class="edit-grupo eg-span2">
+          <label>Nome completo</label>
+          <input type="text" id="e-nome" />
+        </div>
+        <div class="edit-grupo">
+          <label>CPF</label>
+          <input type="text" id="e-cpf" maxlength="14" />
+        </div>
+        <div class="edit-grupo">
+          <label>Nascimento</label>
+          <input type="date" id="e-nascimento" />
+        </div>
+        <div class="edit-grupo">
+          <label>Estado civil</label>
+          <select id="e-estado_civil">
+            <option value="">Selecione</option>
+            <option>Solteiro(a)</option><option>Casado(a)</option>
+            <option>Divorciado(a)</option><option>Viúvo(a)</option><option>União estável</option>
+          </select>
+        </div>
+        <div class="edit-grupo">
+          <label>Profissão</label>
+          <input type="text" id="e-profissao" />
+        </div>
+        <div class="edit-grupo">
+          <label>E-mail</label>
+          <input type="email" id="e-email" />
+        </div>
+        <div class="edit-grupo">
+          <label>Celular</label>
+          <input type="text" id="e-celular" />
+        </div>
+        <div class="edit-grupo eg-span2">
+          <label>Endereço atual</label>
+          <input type="text" id="e-endereco_atual" />
+        </div>
+        <div class="edit-grupo">
+          <label>CEP</label>
+          <input type="text" id="e-cep_atual" />
+        </div>
+        <div class="edit-grupo">
+          <label>Cidade</label>
+          <input type="text" id="e-cidade_atual" />
+        </div>
+        <div class="edit-grupo">
+          <label>Estado (UF)</label>
+          <select id="e-estado_atual">
+            <option value="">UF</option>
+            <option>AC</option><option>AL</option><option>AM</option><option>AP</option>
+            <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+            <option>GO</option><option>MA</option><option>MG</option><option>MS</option>
+            <option>MT</option><option>PA</option><option>PB</option><option>PE</option>
+            <option>PI</option><option>PR</option><option>RJ</option><option>RN</option>
+            <option>RO</option><option>RR</option><option>RS</option><option>SC</option>
+            <option>SE</option><option>SP</option><option>TO</option>
+          </select>
+        </div>
+
+        <div class="edit-sec">📞 Contato de Emergência</div>
+        <div class="edit-grupo">
+          <label>Nome</label>
+          <input type="text" id="e-emerg_nome" />
+        </div>
+        <div class="edit-grupo">
+          <label>Celular</label>
+          <input type="text" id="e-emerg_cel" />
+        </div>
+        <div class="edit-grupo">
+          <label>Parentesco</label>
+          <input type="text" id="e-emerg_parentesco" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" onclick="fecharEditar()">Cancelar</button>
+      <button class="btn-salvar" onclick="salvarEdicao()">💾 Salvar alterações</button>
     </div>
   </div>
 </div>
 
 <script>
-  // ── Configurações ─────────────────────────────────────────
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxTPMr-jH9jhUfnExIIZKXU3-UabhjUPlNFJDLrUQc3ldwiEep3YSpe3K_fRlvLrMj7A/exec';
-  const SENHA_ADMIN     = 'admin123'; // ← altere aqui
+  const SENHA_ADMIN = 'admin123';
+
+  const COLUNAS = [
+    { id: 'nova',      label: 'Novo',        emoji: '🟡', cls: 'col-nova'      },
+    { id: 'analise',   label: 'Em análise',  emoji: '🔵', cls: 'col-analise'   },
+    { id: 'concluida', label: 'Concluído',   emoji: '🟢', cls: 'col-concluida' },
+    { id: 'reprovada', label: 'Reprovado',   emoji: '🔴', cls: 'col-reprovada' },
+    { id: 'arquivada', label: 'Arquivado',   emoji: '⚫', cls: 'col-arquivada' },
+  ];
+
+  let interfaceAtual = 'kanban';
+  let abaAtiva = 'nova';
 
   // ── Login ─────────────────────────────────────────────────
   function fazerLogin() {
     if (document.getElementById('senha-input').value === SENHA_ADMIN) {
+      sessionStorage.setItem('admin_auth', '1');
       document.getElementById('tela-login').style.display = 'none';
       document.getElementById('app').style.display = 'block';
       carregarFichas();
@@ -239,6 +590,7 @@
   document.getElementById('senha-input').addEventListener('keydown', e => { if (e.key === 'Enter') fazerLogin(); });
 
   function sair() {
+    sessionStorage.removeItem('admin_auth');
     document.getElementById('app').style.display = 'none';
     document.getElementById('tela-login').style.display = 'flex';
     document.getElementById('senha-input').value = '';
@@ -249,95 +601,221 @@
   let fichaAtual  = null;
 
   async function carregarFichas() {
-    document.getElementById('grid-fichas').innerHTML =
-      '<div class="sem-fichas" style="grid-column:1/-1"><div class="spinner"></div></div>';
+    document.getElementById('kanban-board').innerHTML =
+      '<div style="display:flex;align-items:center;gap:12px;padding:40px;width:100%"><div class="spinner"></div><span style="color:var(--muted)">Carregando fichas…</span></div>';
     try {
       const res  = await fetch(`${APPS_SCRIPT_URL}?acao=listar`);
       const json = await res.json();
       fichasTodas = json.fichas || [];
-      renderFichas();
+      renderKanban();
     } catch (err) {
-      document.getElementById('grid-fichas').innerHTML =
-        `<div class="sem-fichas" style="grid-column:1/-1">
-          <div class="icon">⚠️</div>
-          <p style="margin-top:10px">Erro ao carregar fichas.<br>Verifique a URL do Apps Script.<br><small>${err.message}</small></p>
+      document.getElementById('kanban-board').innerHTML =
+        `<div style="text-align:center;padding:40px;color:var(--muted);width:100%">
+          <div style="font-size:2rem">⚠️</div>
+          <p style="margin-top:10px">Erro ao carregar fichas.<br><small>${esc(err.message)}</small></p>
         </div>`;
     }
   }
 
-  function renderFichas() {
+  function fichasFiltradas() {
     const busca    = (document.getElementById('busca').value || '').toLowerCase();
-    const status   = document.getElementById('filtro-status').value;
     const corretor = document.getElementById('filtro-corretor').value;
-
-    const lista = fichasTodas.filter(f => {
+    return fichasTodas.filter(f => {
       const okBusca    = !busca    || (f.nome||'').toLowerCase().includes(busca) || (f.cpf||'').includes(busca);
-      const okStatus   = !status   || f.status === status;
       const okCorretor = !corretor || f.corretor === corretor;
-      return okBusca && okStatus && okCorretor;
+      return okBusca && okCorretor;
     });
+  }
 
-    const novas    = fichasTodas.filter(f => f.status === 'nova').length;
-    const analise  = fichasTodas.filter(f => f.status === 'analise').length;
-    const concl    = fichasTodas.filter(f => f.status === 'concluida').length;
+  // ── Trocar interface ─────────────────────────────────────
+  function trocarInterface() {
+    interfaceAtual = interfaceAtual === 'kanban' ? 'abas' : 'kanban';
+    document.getElementById('view-kanban').style.display = interfaceAtual === 'kanban' ? 'block' : 'none';
+    document.getElementById('view-abas').style.display   = interfaceAtual === 'abas'   ? 'block' : 'none';
+    const btn = document.getElementById('btn-trocar');
+    btn.textContent = interfaceAtual === 'kanban' ? '⊞ Trocar interface' : '⊟ Trocar interface';
+    renderKanban();
+  }
 
-    document.getElementById('stat-total').textContent    = fichasTodas.length;
-    document.getElementById('stat-nova').textContent     = novas;
-    document.getElementById('stat-analise').textContent  = analise;
-    document.getElementById('stat-concluida').textContent = concl;
+  // ── Render (despacha para a view ativa) ──────────────────
+  function renderKanban() {
+    atualizarStats();
+    if (interfaceAtual === 'abas') { renderAbas(); return; }
 
+    const lista = fichasFiltradas();
+    document.getElementById('kanban-board').innerHTML = COLUNAS.map(col => {
+      const fichasCol = lista.filter(f => (f.status || 'nova') === col.id);
+      const cardsHtml = fichasCol.length
+        ? fichasCol.map(f => cardKanban(f, col.id)).join('')
+        : '<div class="col-vazia"><div class="vi">📭</div>Nenhuma ficha</div>';
+      return `
+        <div class="kanban-col ${col.cls}">
+          <div class="col-header">
+            <span>${col.emoji} ${col.label}</span>
+            <span class="col-count">${fichasCol.length}</span>
+          </div>
+          <div class="col-cards">${cardsHtml}</div>
+        </div>`;
+    }).join('');
+  }
+
+  function atualizarStats() {
+    document.getElementById('s-total').textContent = fichasTodas.length;
+    COLUNAS.forEach(c => {
+      const el = document.getElementById('s-' + c.id);
+      if (el) el.textContent = fichasTodas.filter(f => (f.status || 'nova') === c.id).length;
+    });
+    const novas = fichasTodas.filter(f => (f.status || 'nova') === 'nova').length;
     const badge = document.getElementById('badge-novas');
-    if (novas > 0) { badge.style.display = 'inline'; badge.textContent = `${novas} nova${novas>1?'s':''}`; }
+    if (novas > 0) { badge.style.display = 'inline'; badge.textContent = `${novas} nova${novas > 1 ? 's' : ''}`; }
     else badge.style.display = 'none';
+  }
 
-    const grid = document.getElementById('grid-fichas');
-    if (!lista.length) {
-      grid.innerHTML = `<div class="sem-fichas" style="grid-column:1/-1"><div class="icon">📂</div><p style="margin-top:10px">Nenhuma ficha encontrada.</p></div>`;
+  // ── View Abas ─────────────────────────────────────────────
+  function setAba(statusId) {
+    abaAtiva = statusId;
+    renderAbas();
+  }
+
+  function renderAbas() {
+    const lista = fichasFiltradas();
+
+    // Tabs
+    document.getElementById('aba-nav').innerHTML = COLUNAS.map(c => {
+      const total = fichasTodas.filter(f => (f.status || 'nova') === c.id).length;
+      const ativa = abaAtiva === c.id ? ' ativa' : '';
+      return `<button class="aba-btn aba-${c.id}${ativa}" onclick="setAba('${c.id}')">
+        ${c.emoji} ${c.label} <span class="ab-count">${total}</span>
+      </button>`;
+    }).join('');
+
+    // Cards da aba ativa
+    const fichasAba = lista.filter(f => (f.status || 'nova') === abaAtiva);
+    const grid = document.getElementById('grid-abas');
+    if (!fichasAba.length) {
+      grid.innerHTML = `<div class="sem-fichas-aba"><div class="icon">📭</div><p>Nenhuma ficha nesta coluna.</p></div>`;
       return;
     }
-    grid.innerHTML = lista.map(cardFicha).join('');
+    grid.innerHTML = fichasAba.map(f => cardGrande(f)).join('');
   }
 
-  const classeStatus = s => s==='nova'?'badge-nova': s==='analise'?'badge-analise':'badge-concluida';
-  const labelStatus  = s => s==='nova'?'Nova': s==='analise'?'Em análise':'Concluída';
-
-  function esc(t) { return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-  function cardFicha(f) {
-    const tipoAssin = f.tipo_assinatura === 'digital' ? '💻 Digital' : f.tipo_assinatura === 'fisica' ? '🖨️ Física' : '—';
+  function cardGrande(f) {
+    const col    = COLUNAS.find(c => c.id === (f.status || 'nova')) || COLUNAS[0];
+    const tipoAs = f.tipo_assinatura === 'digital' ? '💻 Digital' : f.tipo_assinatura === 'fisica' ? '🖨️ Física' : '—';
+    const btnsMover = COLUNAS
+      .filter(c => c.id !== (f.status || 'nova'))
+      .map(c => `<button class="btn-mv bm-${c.id}" onclick="moverFichaAba('${esc(f.id)}','${c.id}')">${c.emoji} ${c.label}</button>`)
+      .join('');
     return `
-    <div class="card-ficha" onclick="abrirModal('${esc(f.id)}')">
-      <span class="badge-status ${classeStatus(f.status)}">${labelStatus(f.status)}</span>
-      <h3>${esc(f.nome)}</h3>
-      <div class="sub">CPF: ${esc(f.cpf)}</div>
-      <div class="info">🏢 Imóvel: <strong>${esc(f.codigo_imovel)}</strong></div>
-      <div class="info">👔 Corretor: ${esc(f.corretor)}</div>
-      <div class="info">🔒 Garantia: ${esc(f.tipo_garantia)} &nbsp;|&nbsp; Assinatura: ${tipoAssin}</div>
-      <div class="data">🗓 ${esc(f.data_envio)} &nbsp;|&nbsp; Prot: <strong>${esc(f.id)}</strong></div>
-    </div>`;
+      <div class="card-g">
+        <div class="card-g-body" onclick="abrirModal('${esc(f.id)}')">
+          <span class="card-g-badge" style="${statusStyle(f.status || 'nova')}">${col.emoji} ${col.label}</span>
+          <div class="card-g-nome">${esc(f.nome || '—')}</div>
+          <div class="card-g-cpf">CPF: ${esc(f.cpf || '—')}</div>
+          <div class="card-g-info">
+            🏢 Imóvel: <strong>${esc(f.codigo_imovel || '—')}</strong><br>
+            👔 Corretor: ${esc(f.corretor || '—')}<br>
+            🔒 Garantia: ${esc(f.tipo_garantia || '—')} &nbsp;|&nbsp; Assinatura: ${tipoAs}
+          </div>
+          <div class="card-g-data">📅 ${esc(f.data_envio || '—')} &nbsp;·&nbsp; Prot: <strong>${esc(f.id || '—')}</strong></div>
+        </div>
+        <div class="card-g-footer">
+          <div class="mover-label">Mover para</div>
+          <div class="mover-btns">${btnsMover}</div>
+          <div class="card-k-acoes">
+            <button class="btn-ac btn-ver"     onclick="abrirModal('${esc(f.id)}')">🔍 Ver</button>
+            <button class="btn-ac btn-editar"  onclick="abrirEditar('${esc(f.id)}')">✏️ Editar</button>
+            <button class="btn-ac btn-excluir" onclick="excluirFichaAba('${esc(f.id)}')">🗑️ Excluir</button>
+          </div>
+        </div>
+      </div>`;
   }
 
-  // ── Marcar todas novas como em análise ───────────────────
-  function marcarTodasLidas() {
-    const novas = fichasTodas.filter(f => f.status === 'nova');
-    if (!novas.length) { alert('Não há fichas novas.'); return; }
-    if (!confirm(`Marcar ${novas.length} ficha(s) como "Em análise"?`)) return;
-    // Atualiza localmente de imediato
-    novas.forEach(f => { f.status = 'analise'; });
-    renderFichas();
-    // Salva no backend em paralelo, sem travar a UI
-    novas.forEach(f => {
-      fetch(`${APPS_SCRIPT_URL}?acao=status&id=${encodeURIComponent(f.id)}&status=analise`)
-        .catch(err => console.error('Erro ao salvar status:', err));
-    });
+  function moverFichaAba(id, novoStatus) {
+    const f = fichasTodas.find(x => x.id === id);
+    if (!f) return;
+    f.status = novoStatus;
+    atualizarStats();
+    renderAbas();
+    fetch(`${APPS_SCRIPT_URL}?acao=status&id=${encodeURIComponent(id)}&status=${encodeURIComponent(novoStatus)}`)
+      .catch(() => {});
   }
 
-  function salvarStatusBackend(id, status) {
-    fetch(`${APPS_SCRIPT_URL}?acao=status&id=${encodeURIComponent(id)}&status=${encodeURIComponent(status)}`)
+  function excluirFichaAba(id) {
+    const f = fichasTodas.find(x => x.id === id);
+    if (!f) return;
+    if (!confirm(`Excluir a ficha de "${f.nome || id}"?\nEsta ação não pode ser desfeita.`)) return;
+    fichasTodas = fichasTodas.filter(x => x.id !== id);
+    atualizarStats();
+    renderAbas();
+    fetch(`${APPS_SCRIPT_URL}?acao=excluir&id=${encodeURIComponent(id)}`).catch(() => {});
+  }
+
+  function cardKanban(f, statusAtual) {
+    const tipoAs = f.tipo_assinatura === 'digital' ? '💻 Digital' : f.tipo_assinatura === 'fisica' ? '🖨️ Física' : '—';
+    const btnsMover = COLUNAS
+      .filter(c => c.id !== statusAtual)
+      .map(c => `<button class="btn-mv bm-${c.id}" onclick="moverFicha('${esc(f.id)}','${c.id}')">${c.emoji} ${c.label}</button>`)
+      .join('');
+    return `
+      <div class="card-k">
+        <div class="card-k-body" onclick="abrirModal('${esc(f.id)}')">
+          <div class="card-k-nome">${esc(f.nome || '—')}</div>
+          <div class="card-k-cpf">CPF: ${esc(f.cpf || '—')}</div>
+          <div class="card-k-info">
+            🏢 <strong>${esc(f.codigo_imovel || '—')}</strong><br>
+            👔 ${esc(f.corretor || '—')}<br>
+            🔒 ${esc(f.tipo_garantia || '—')} · ${tipoAs}
+          </div>
+          <div class="card-k-data">📅 ${esc(f.data_envio || '—')} · Prot: ${esc(f.id || '—')}</div>
+        </div>
+        <div class="card-k-footer">
+          <div class="mover-label">Mover para</div>
+          <div class="mover-btns">${btnsMover}</div>
+          <div class="card-k-acoes">
+            <button class="btn-ac btn-ver"     onclick="abrirModal('${esc(f.id)}')">🔍 Ver</button>
+            <button class="btn-ac btn-editar"  onclick="abrirEditar('${esc(f.id)}')">✏️ Editar</button>
+            <button class="btn-ac btn-excluir" onclick="excluirFicha('${esc(f.id)}')">🗑️ Excluir</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ── Mover ─────────────────────────────────────────────────
+  function moverFicha(id, novoStatus) {
+    const f = fichasTodas.find(x => x.id === id);
+    if (!f) return;
+    f.status = novoStatus;
+    renderKanban();
+    fetch(`${APPS_SCRIPT_URL}?acao=status&id=${encodeURIComponent(id)}&status=${encodeURIComponent(novoStatus)}`)
       .catch(err => console.error('Erro ao salvar status:', err));
   }
 
-  // ── Modal ─────────────────────────────────────────────────
+  // ── Excluir ───────────────────────────────────────────────
+  function excluirFicha(id) {
+    const f = fichasTodas.find(x => x.id === id);
+    if (!f) return;
+    if (!confirm(`Excluir a ficha de "${f.nome || id}"?\nEsta ação não pode ser desfeita.`)) return;
+    fichasTodas = fichasTodas.filter(x => x.id !== id);
+    renderKanban();
+    fetch(`${APPS_SCRIPT_URL}?acao=excluir&id=${encodeURIComponent(id)}`)
+      .catch(() => {});
+  }
+
+  // ── Marcar novas → em análise ─────────────────────────────
+  function marcarTodasLidas() {
+    const novas = fichasTodas.filter(f => (f.status || 'nova') === 'nova');
+    if (!novas.length) { alert('Não há fichas novas.'); return; }
+    if (!confirm(`Marcar ${novas.length} ficha(s) como "Em análise"?`)) return;
+    novas.forEach(f => { f.status = 'analise'; });
+    renderKanban();
+    novas.forEach(f =>
+      fetch(`${APPS_SCRIPT_URL}?acao=status&id=${encodeURIComponent(f.id)}&status=analise`)
+        .catch(() => {})
+    );
+  }
+
+  // ── Modal Detalhe ─────────────────────────────────────────
   function abrirModal(id) {
     fichaAtual = fichasTodas.find(f => f.id === id);
     if (!fichaAtual) return;
@@ -355,6 +833,27 @@
     if (e.target === document.getElementById('overlay-modal')) fecharModal();
   });
 
+  // ── Helpers ───────────────────────────────────────────────
+  function esc(t) {
+    return String(t || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function labelStatus(s) {
+    const c = COLUNAS.find(x => x.id === s);
+    return c ? `${c.emoji} ${c.label}` : (s || '—');
+  }
+
+  function statusStyle(s) {
+    const map = {
+      nova:      'background:#fef3c7;color:#78350f',
+      analise:   'background:#dbeafe;color:#1e3a8a',
+      concluida: 'background:#d1fae5;color:#064e3b',
+      reprovada: 'background:#fee2e2;color:#7f1d1d',
+      arquivada: 'background:#e2e8f0;color:#334155',
+    };
+    return map[s] || 'background:#f1f5f9;color:#374151';
+  }
+
   const campo = (label, valor) =>
     `<div class="campo-det"><label>${label}</label><span>${esc(valor)}</span></div>`;
 
@@ -363,9 +862,9 @@
   }
 
   function renderDetalhe(f) {
-    let html = `<div style="margin-bottom:16px;">
-      <span class="badge-status ${classeStatus(f.status)}" style="font-size:.82rem;padding:4px 12px;border-radius:20px;">${labelStatus(f.status)}</span>
-      <span style="margin-left:14px;font-size:.82rem;color:var(--muted)">
+    let html = `<div style="margin-bottom:14px;">
+      <span style="font-size:.8rem;padding:4px 12px;border-radius:20px;font-weight:700;${statusStyle(f.status)}">${labelStatus(f.status)}</span>
+      <span style="margin-left:12px;font-size:.8rem;color:var(--muted)">
         Enviado em: <strong>${esc(f.data_envio)}</strong> &nbsp;|&nbsp; Protocolo: <strong>${esc(f.id)}</strong>
       </span>
     </div>`;
@@ -373,91 +872,129 @@
     html += secaoDetalhe('🏢 Dados do Imóvel', [
       campo('Corretor', f.corretor),
       campo('Código do imóvel', f.codigo_imovel),
-      campo('Tem vaga', f.tem_vaga === 'sim' ? `Sim (${f.qtd_vagas} vaga${f.qtd_vagas>1?'s':''})` : 'Não'),
+      campo('Vaga', f.tem_vaga === 'sim' ? `Sim (${f.qtd_vagas} vaga${f.qtd_vagas > 1 ? 's' : ''})` : 'Não'),
       campo('Tipo de garantia', f.tipo_garantia),
     ]);
 
     html += secaoDetalhe('👤 Locatário Principal', [
-      campo('Nome', f.nome),
-      campo('CPF', f.cpf),
-      campo('Nascimento', f.nascimento),
-      campo('Estado civil', f.estado_civil),
-      campo('Nacionalidade', f.nacionalidade),
-      campo('Profissão', f.profissao),
-      campo('E-mail', f.email),
-      campo('Celular', f.celular),
-      campo('Endereço', f.endereco_atual),
-      campo('CEP', f.cep_atual),
-      campo('Cidade', f.cidade_atual),
-      campo('Estado', f.estado_atual),
+      campo('Nome', f.nome), campo('CPF', f.cpf), campo('Nascimento', f.nascimento),
+      campo('Estado civil', f.estado_civil), campo('Nacionalidade', f.nacionalidade),
+      campo('Profissão', f.profissao), campo('E-mail', f.email), campo('Celular', f.celular),
+      campo('Endereço', f.endereco_atual), campo('CEP', f.cep_atual),
+      campo('Cidade', f.cidade_atual), campo('Estado', f.estado_atual),
     ]);
 
     html += secaoDetalhe('📞 Contato de Emergência', [
-      campo('Nome', f.emerg_nome),
-      campo('Celular', f.emerg_cel),
-      campo('Parentesco', f.emerg_parentesco),
+      campo('Nome', f.emerg_nome), campo('Celular', f.emerg_cel), campo('Parentesco', f.emerg_parentesco),
     ]);
 
     if (f.tem_conjuge === 'sim') {
       html += secaoDetalhe('💑 Cônjuge', [
-        campo('Nome', f.conj_nome),
-        campo('CPF', f.conj_cpf),
-        campo('Nascimento', f.conj_nascimento),
-        campo('Profissão', f.conj_profissao),
-        campo('E-mail', f.conj_email),
-        campo('Celular', f.conj_celular),
+        campo('Nome', f.conj_nome), campo('CPF', f.conj_cpf),
+        campo('Nascimento', f.conj_nascimento), campo('Profissão', f.conj_profissao),
+        campo('E-mail', f.conj_email), campo('Celular', f.conj_celular),
       ]);
     }
 
     const qtd = parseInt(f.qtd_locatarios) || 0;
     for (let i = 1; i <= qtd; i++) {
       html += secaoDetalhe(`👥 Locatário Adicional #${i}`, [
-        campo('Nome', f[`loc${i}_nome`]),
-        campo('CPF', f[`loc${i}_cpf`]),
-        campo('Nascimento', f[`loc${i}_nascimento`]),
-        campo('Estado civil', f[`loc${i}_estado_civil`]),
-        campo('Profissão', f[`loc${i}_profissao`]),
-        campo('E-mail', f[`loc${i}_email`]),
-        campo('Celular', f[`loc${i}_celular`]),
-        campo('Endereço', f[`loc${i}_endereco`]),
+        campo('Nome', f[`loc${i}_nome`]), campo('CPF', f[`loc${i}_cpf`]),
+        campo('Nascimento', f[`loc${i}_nascimento`]), campo('Estado civil', f[`loc${i}_estado_civil`]),
+        campo('Profissão', f[`loc${i}_profissao`]), campo('E-mail', f[`loc${i}_email`]),
+        campo('Celular', f[`loc${i}_celular`]), campo('Endereço', f[`loc${i}_endereco`]),
         campo('Cidade', f[`loc${i}_cidade`]),
         campo('Emergência', `${f[`loc${i}_emerg_nome`] || '—'} — ${f[`loc${i}_emerg_cel`] || '—'}`),
       ]);
     }
 
     html += secaoDetalhe('✍️ Assinatura', [
-      campo('Tipo escolhido', f.tipo_assinatura === 'digital' ? 'Digital (R$ 29,00/assinatura)' : 'Física (cartório)'),
+      campo('Tipo', f.tipo_assinatura === 'digital' ? 'Digital (R$ 29,00/assinatura)' : 'Física (cartório)'),
     ]);
 
-    // Arquivos
     const links = [];
-    if (f.doc_identificacao_url)      links.push(`<a href="${esc(f.doc_identificacao_url)}" target="_blank" style="color:var(--primary)">📎 Doc. identif.</a>`);
-    if (f.comprovante_residencia_url)  links.push(`<a href="${esc(f.comprovante_residencia_url)}" target="_blank" style="color:var(--primary)">🏠 Comp. res.</a>`);
-    if (f.conj_doc_url)               links.push(`<a href="${esc(f.conj_doc_url)}" target="_blank" style="color:var(--primary)">👫 Doc. cônjuge</a>`);
+    if (f.doc_identificacao_url)     links.push(`<a href="${esc(f.doc_identificacao_url)}" target="_blank" style="color:var(--primary)">📎 Doc. identif.</a>`);
+    if (f.comprovante_residencia_url) links.push(`<a href="${esc(f.comprovante_residencia_url)}" target="_blank" style="color:var(--primary)">🏠 Comp. res.</a>`);
+    if (f.conj_doc_url)              links.push(`<a href="${esc(f.conj_doc_url)}" target="_blank" style="color:var(--primary)">👫 Doc. cônjuge</a>`);
     for (let i = 1; i <= qtd; i++) {
       if (f[`loc${i}_doc_id_url`])   links.push(`<a href="${esc(f[`loc${i}_doc_id_url`])}" target="_blank" style="color:var(--primary)">📎 Doc. loc.${i}</a>`);
       if (f[`loc${i}_comp_res_url`]) links.push(`<a href="${esc(f[`loc${i}_comp_res_url`])}" target="_blank" style="color:var(--primary)">🏠 Res. loc.${i}</a>`);
     }
     if (links.length) {
       html += `<div class="secao-detalhe"><h4>📂 Documentos no Drive</h4>
-        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:.88rem;">${links.join('')}</div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:.86rem;">${links.join('')}</div>
       </div>`;
     }
 
     return html;
   }
 
-  // ── Mudar status no modal ─────────────────────────────────
-  function mudarStatus(novoStatus) {
-    if (!fichaAtual) return;
-    // Atualiza localmente de imediato (sem esperar o backend)
-    fichaAtual.status = novoStatus;
-    const f = fichasTodas.find(x => x.id === fichaAtual.id);
-    if (f) f.status = novoStatus;
-    document.getElementById('modal-corpo').innerHTML = renderDetalhe(fichaAtual);
-    renderFichas();
-    // Salva no backend em background
-    salvarStatusBackend(fichaAtual.id, novoStatus);
+  // ── Modal Edição ──────────────────────────────────────────
+  let fichaEditando = null;
+
+  function abrirEditar(id) {
+    fichaEditando = fichasTodas.find(f => f.id === id);
+    if (!fichaEditando) return;
+    const f = fichaEditando;
+    const set = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val || ''; };
+    set('e-corretor',       f.corretor);
+    set('e-codigo_imovel',  f.codigo_imovel);
+    set('e-tipo_garantia',  f.tipo_garantia);
+    set('e-nome',           f.nome);
+    set('e-cpf',            f.cpf);
+    set('e-nascimento',     f.nascimento);
+    set('e-estado_civil',   f.estado_civil);
+    set('e-profissao',      f.profissao);
+    set('e-email',          f.email);
+    set('e-celular',        f.celular);
+    set('e-endereco_atual', f.endereco_atual);
+    set('e-cep_atual',      f.cep_atual);
+    set('e-cidade_atual',   f.cidade_atual);
+    set('e-estado_atual',   f.estado_atual);
+    set('e-emerg_nome',     f.emerg_nome);
+    set('e-emerg_cel',      f.emerg_cel);
+    set('e-emerg_parentesco', f.emerg_parentesco);
+    document.getElementById('overlay-editar').classList.add('ativo');
+  }
+
+  function fecharEditar() {
+    document.getElementById('overlay-editar').classList.remove('ativo');
+    fichaEditando = null;
+  }
+
+  document.getElementById('overlay-editar').addEventListener('click', e => {
+    if (e.target === document.getElementById('overlay-editar')) fecharEditar();
+  });
+
+  function salvarEdicao() {
+    if (!fichaEditando) return;
+    const get = id => (document.getElementById(id) || {}).value || '';
+    Object.assign(fichaEditando, {
+      corretor:        get('e-corretor'),
+      codigo_imovel:   get('e-codigo_imovel'),
+      tipo_garantia:   get('e-tipo_garantia'),
+      nome:            get('e-nome'),
+      cpf:             get('e-cpf'),
+      nascimento:      get('e-nascimento'),
+      estado_civil:    get('e-estado_civil'),
+      profissao:       get('e-profissao'),
+      email:           get('e-email'),
+      celular:         get('e-celular'),
+      endereco_atual:  get('e-endereco_atual'),
+      cep_atual:       get('e-cep_atual'),
+      cidade_atual:    get('e-cidade_atual'),
+      estado_atual:    get('e-estado_atual'),
+      emerg_nome:      get('e-emerg_nome'),
+      emerg_cel:       get('e-emerg_cel'),
+      emerg_parentesco: get('e-emerg_parentesco'),
+    });
+    fetch(`${APPS_SCRIPT_URL}?acao=editar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ id: fichaEditando.id, dados: fichaEditando }),
+    }).catch(() => {});
+    fecharEditar();
+    renderKanban();
   }
 
   // ── PDF ───────────────────────────────────────────────────
@@ -465,7 +1002,6 @@
     if (!fichaAtual) return;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-
     const L = 14, W = 182, lh = 7;
     let y = 22;
 
@@ -490,16 +1026,16 @@
       y += lh * linhas.length;
     }
 
-    function sep() { doc.setDrawColor(200,210,225); doc.line(L, y, L+W, y); y += 4; }
+    function sep() { doc.setDrawColor(200, 210, 225); doc.line(L, y, L + W, y); y += 4; }
 
-    // Cabeçalho
     doc.setFillColor(26, 60, 110);
     doc.rect(0, 0, 210, 22, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(13); doc.setFont(undefined, 'bold');
     doc.text('Ficha Cadastral de Locatário Residencial', 105, 11, { align: 'center' });
     doc.setFontSize(8); doc.setFont(undefined, 'normal');
-    doc.text(`Protocolo: ${fichaAtual.id || '—'}   |   Data: ${fichaAtual.data_envio || '—'}   |   Status: ${labelStatus(fichaAtual.status)}`, 105, 18, { align: 'center' });
+    const stLabel = COLUNAS.find(c => c.id === fichaAtual.status);
+    doc.text(`Protocolo: ${fichaAtual.id || '—'}   |   Data: ${fichaAtual.data_envio || '—'}   |   Status: ${stLabel ? stLabel.label : fichaAtual.status}`, 105, 18, { align: 'center' });
     doc.setTextColor(0, 0, 0);
     y = 32;
 
@@ -544,18 +1080,18 @@
     const qtd = parseInt(fichaAtual.qtd_locatarios) || 0;
     for (let i = 1; i <= qtd; i++) {
       titulo(`LOCATÁRIO ADICIONAL #${i}`);
-      linha('Nome', fichaAtual[`loc${i}_nome`]);
-      linha('CPF', fichaAtual[`loc${i}_cpf`]);
-      linha('Nascimento', fichaAtual[`loc${i}_nascimento`]);
-      linha('Estado civil', fichaAtual[`loc${i}_estado_civil`]);
-      linha('Profissão', fichaAtual[`loc${i}_profissao`]);
-      linha('E-mail', fichaAtual[`loc${i}_email`]);
-      linha('Celular', fichaAtual[`loc${i}_celular`]);
-      linha('Endereço', fichaAtual[`loc${i}_endereco`]);
-      linha('Cidade', fichaAtual[`loc${i}_cidade`]);
-      linha('Emergência (nome)', fichaAtual[`loc${i}_emerg_nome`]);
-      linha('Emergência (cel)', fichaAtual[`loc${i}_emerg_cel`]);
-      linha('Parentesco', fichaAtual[`loc${i}_emerg_parentesco`]);
+      linha('Nome',          fichaAtual[`loc${i}_nome`]);
+      linha('CPF',           fichaAtual[`loc${i}_cpf`]);
+      linha('Nascimento',    fichaAtual[`loc${i}_nascimento`]);
+      linha('Estado civil',  fichaAtual[`loc${i}_estado_civil`]);
+      linha('Profissão',     fichaAtual[`loc${i}_profissao`]);
+      linha('E-mail',        fichaAtual[`loc${i}_email`]);
+      linha('Celular',       fichaAtual[`loc${i}_celular`]);
+      linha('Endereço',      fichaAtual[`loc${i}_endereco`]);
+      linha('Cidade',        fichaAtual[`loc${i}_cidade`]);
+      linha('Emerg. nome',   fichaAtual[`loc${i}_emerg_nome`]);
+      linha('Emerg. cel',    fichaAtual[`loc${i}_emerg_cel`]);
+      linha('Parentesco',    fichaAtual[`loc${i}_emerg_parentesco`]);
       sep();
     }
 
@@ -563,7 +1099,6 @@
     linha('Tipo', fichaAtual.tipo_assinatura === 'digital' ? 'Digital (R$ 29,00 por assinatura)' : 'Física (reconhecimento em cartório)');
     sep();
 
-    // Rodapé em todas as páginas
     const npages = doc.getNumberOfPages();
     for (let p = 1; p <= npages; p++) {
       doc.setPage(p);
@@ -571,7 +1106,7 @@
       doc.text(`Gerado em ${new Date().toLocaleString('pt-BR')} — Pág. ${p}/${npages}`, 105, 292, { align: 'center' });
     }
 
-    doc.save(`ficha_${(fichaAtual.nome||'locatario').replace(/\s+/g,'_')}_${fichaAtual.id||Date.now()}.pdf`);
+    doc.save(`ficha_${(fichaAtual.nome || 'locatario').replace(/\s+/g, '_')}_${fichaAtual.id || Date.now()}.pdf`);
   }
 </script>
 </body>

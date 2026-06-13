@@ -1,0 +1,168 @@
+═══════════════════════════════════════════════════════════════════
+ SISTEMA DE FICHAS CADASTRAIS — GUIA DE ATUALIZAÇÃO
+ Dashboard + Kanban + Correções
+═══════════════════════════════════════════════════════════════════
+
+O que foi alterado nesta atualização
+──────────────────────────────────────
+1. painel.html   → botão "Dashboard", botão "Trocar interface" (Kanban/Abas),
+                   sessionStorage para manter sessão entre páginas.
+2. dashboard.html → nova página criada (dashboard de análise com gráficos e exportação).
+3. backend.gs    → 3 novas funções: excluir ficha, editar ficha, filtrar para dashboard.
+
+
+═══════════════════════════════════════════════════════════════════
+ PARTE 1 — ATUALIZAR O GOOGLE APPS SCRIPT (backend.gs)
+═══════════════════════════════════════════════════════════════════
+
+Sempre que o backend.gs for alterado, você PRECISA criar uma nova
+implantação. O link antigo CONTINUA funcionando — o novo só substitui
+quando você trocar a URL nos HTMLs.
+
+PASSOS:
+  1. Acesse script.google.com e abra seu projeto.
+  2. Apague todo o conteúdo do editor e cole o novo conteúdo do arquivo
+     backend.gs (desta pasta).
+  3. Clique em "Implantar" → "Gerenciar implantações".
+  4. Clique no lápis (editar) na implantação existente.
+  5. Em "Versão", selecione "Nova versão".
+  6. Clique em "Implantar".
+  7. COPIE a URL nova (termina em /exec).
+
+  ATENÇÃO: se você criou uma nova implantação em vez de editar a
+  existente, você terá uma URL diferente. Nesse caso, substitua a
+  constante APPS_SCRIPT_URL nos três arquivos HTML:
+    - formulario.html  (linha com const APPS_SCRIPT_URL = '...')
+    - painel.html      (linha com const APPS_SCRIPT_URL = '...')
+    - dashboard.html   (linha com const APPS_SCRIPT_URL = '...')
+
+
+═══════════════════════════════════════════════════════════════════
+ PARTE 2 — HOSPEDAR OS ARQUIVOS HTML (Netlify Drop)
+═══════════════════════════════════════════════════════════════════
+
+Os três arquivos HTML são estáticos e ficam hospedados no Netlify.
+O backend.gs roda separado no Google Apps Script.
+
+PASSOS:
+  1. Acesse app.netlify.com/drop (ou netlify.com → "Deploy manually").
+  2. Arraste a PASTA inteira (ou os 4 arquivos: formulario.html,
+     painel.html, dashboard.html, index.html) para a área de drop.
+  3. O Netlify vai gerar uma URL como: https://nome-aleatorio.netlify.app
+  4. Você pode renomear o site nas configurações do Netlify.
+
+  Se já tiver um site publicado:
+  1. Abra o site no painel do Netlify.
+  2. Vá em "Deploys" → "Drag and drop your site folder here".
+  3. Arraste a pasta novamente — o Netlify substitui os arquivos
+     automaticamente e mantém a mesma URL.
+
+
+═══════════════════════════════════════════════════════════════════
+ PARTE 3 — CONFIGURAR AS EQUIPES NO DASHBOARD
+═══════════════════════════════════════════════════════════════════
+
+No arquivo dashboard.html, existe uma constante chamada EQUIPES
+(aproximadamente linha 20 do bloco <script>):
+
+  const EQUIPES = {
+    'São Gonçalo': ['Aline Alves', 'Fernando Macedo', 'Gabriel Araújo'],
+    'Niterói':     ['Gabriel Medeiros', 'Michel Alves', 'Lívia Cordeiro', 'Victor Sutter'],
+  };
+
+Altere os nomes dos corretores em cada equipe conforme necessário.
+Os nomes DEVEM ser idênticos aos usados no formulário (incluindo
+acentos e capitalização), caso contrário o filtro não vai funcionar.
+
+
+═══════════════════════════════════════════════════════════════════
+ PARTE 4 — COMO USAR O DASHBOARD
+═══════════════════════════════════════════════════════════════════
+
+Acesso:
+  - Faça login no painel.html normalmente.
+  - Clique no botão laranja "📊 Dashboard" na barra de ferramentas.
+  - Como você já está logado, entrará direto. Se acessar o dashboard
+    diretamente (sem passar pelo painel), será pedida a senha.
+
+Filtros disponíveis:
+  ┌─────────────────┬─────────────────────────────────────────────┐
+  │ Equipe          │ Filtra pelos corretores da equipe escolhida │
+  │ Data de / Até   │ Filtra pelo campo "data_envio" da ficha     │
+  │ Corretor(es)    │ Multi-seleção de corretores (checkboxes)    │
+  │ Código imóvel   │ Busca parcial no campo codigo_imovel        │
+  │ Puxar Tudo      │ Ignora todos os filtros e mostra tudo       │
+  └─────────────────┴─────────────────────────────────────────────┘
+
+  → Clique em "Aplicar Filtros" para atualizar os gráficos e a tabela.
+  → Clique em "Limpar" para resetar todos os filtros.
+
+Gráficos:
+  - Distribuição por Status (rosca)
+  - Fichas por Corretor (barras horizontais)
+  - Evolução Mensal (linha — mostra quantas fichas entraram por mês)
+  - Tipo de Garantia (pizza)
+  - Tipo de Assinatura (barras verticais)
+
+Exportação (botão "📊 Gerar Relatório" fixo no canto inferior direito):
+  - "Exportar PDF"         → PDF em paisagem (A4) com resumo de status
+                             e tabela completa das fichas filtradas.
+  - "Exportar Planilha"    → Arquivo .xlsx com os campos principais
+                             das fichas filtradas (abre no Excel/Sheets).
+
+
+═══════════════════════════════════════════════════════════════════
+ PARTE 5 — SENHAS E SEGURANÇA
+═══════════════════════════════════════════════════════════════════
+
+A senha padrão é: admin123
+
+Para trocar, altere a constante SENHA_ADMIN nos arquivos:
+  - painel.html    → const SENHA_ADMIN = 'admin123';
+  - dashboard.html → const SENHA_ADMIN = 'admin123';
+
+IMPORTANTE: essa senha fica visível no código-fonte HTML. Para
+uso em produção, considere adicionar uma camada de autenticação
+no próprio Apps Script (verificação por e-mail Google, por exemplo).
+
+
+═══════════════════════════════════════════════════════════════════
+ PARTE 6 — FUNÇÕES NOVAS NO BACKEND (para referência técnica)
+═══════════════════════════════════════════════════════════════════
+
+acao=excluir (GET)
+  Parâmetros: id=<protocolo>
+  Remove a linha correspondente da planilha.
+  Exemplo: ?acao=excluir&id=LC-ABC123-XY89
+
+acao=editar (POST)
+  Body JSON: { "acao": "editar", "id": "LC-...", "dados": { campo: valor, ... } }
+  Atualiza os campos enviados na linha correspondente da planilha.
+  Não altera id, data_envio nem status.
+
+acao=dashboard (GET)
+  Parâmetros opcionais:
+    puxar_tudo=1         → retorna tudo sem filtrar
+    de=YYYY-MM-DD        → data inicial
+    ate=YYYY-MM-DD       → data final
+    corretor=Nome1,Nome2 → lista separada por vírgula
+    codigo_imovel=AP-10  → busca parcial
+  Retorna: { fichas: [...], agregados: { porStatus, porCorretor, ... } }
+
+
+═══════════════════════════════════════════════════════════════════
+ RESUMO RÁPIDO DE CHECKLIST
+═══════════════════════════════════════════════════════════════════
+
+Ao publicar pela primeira vez esta atualização:
+
+  [ ] Colei o novo backend.gs no Apps Script
+  [ ] Criei nova versão na implantação existente (ou criei nova
+      implantação e atualizei APPS_SCRIPT_URL nos 3 HTMLs)
+  [ ] Fiz upload dos arquivos no Netlify (painel.html, formulario.html,
+      dashboard.html, index.html)
+  [ ] Testei o login no painel e o botão Dashboard
+  [ ] Testei os filtros e os gráficos no dashboard
+  [ ] Testei a exportação PDF e XLSX
+
+═══════════════════════════════════════════════════════════════════

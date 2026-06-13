@@ -280,7 +280,7 @@
 </div>
 
 <main>
-  <form id="form-ficha" novalidate>
+  <form id="form-ficha">
 
     <!-- ── DADOS DO IMÓVEL ───────────────────────────────── -->
     <div class="secao">
@@ -464,23 +464,23 @@
               <input type="date" name="conj_nascimento" />
             </div>
             <div>
-              <label>Nacionalidade</label>
+              <label>Nacionalidade <span class="obrig">*</span></label>
               <input type="text" name="conj_nacionalidade" value="Brasileiro(a)" />
             </div>
             <div>
-              <label>Profissão</label>
+              <label>Profissão <span class="obrig">*</span></label>
               <input type="text" name="conj_profissao" />
             </div>
             <div>
-              <label>E-mail</label>
+              <label>E-mail <span class="obrig">*</span></label>
               <input type="email" name="conj_email" />
             </div>
             <div>
-              <label>Celular</label>
+              <label>Celular <span class="obrig">*</span></label>
               <input type="text" name="conj_celular" placeholder="(00) 00000-0000" maxlength="15" data-mask="tel" />
             </div>
             <div>
-              <label>Documento de identificação (RG ou CNH)</label>
+              <label>Documento de identificação (RG ou CNH) <span class="obrig">*</span></label>
               <div class="upload-area" id="area-conj-doc">
                 <div class="upload-icon">📎</div>
                 <div class="upload-label">PDF, JPG ou PNG — máx. 10 MB</div>
@@ -580,6 +580,7 @@
 <script>
   // ── Configuração ────────────────────────────────────────────
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxTPMr-jH9jhUfnExIIZKXU3-UabhjUPlNFJDLrUQc3ldwiEep3YSpe3K_fRlvLrMj7A/exec';
+  
 
   // ── Máscaras ────────────────────────────────────────────────
   function aplicarMascara(val, tipo) {
@@ -632,7 +633,7 @@
     r.addEventListener('change', () => {
       const mostrar = r.value === 'sim' && r.checked;
       document.getElementById('campos-conjuge').style.display = mostrar ? 'block' : 'none';
-      document.querySelectorAll('#campos-conjuge [required]').forEach(el => el.required = mostrar);
+      document.querySelectorAll('#campos-conjuge input, #campos-conjuge select').forEach(el => el.required = mostrar);
     });
   });
 
@@ -659,20 +660,20 @@
           <input type="date" name="loc${n}_nascimento" required />
         </div>
         <div>
-          <label>Estado civil</label>
-          <select name="loc${n}_estado_civil">
+          <label>Estado civil <span class="obrig">*</span></label>
+          <select name="loc${n}_estado_civil" required>
             <option value="">Selecione</option>
             <option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option>
             <option>Viúvo(a)</option><option>União estável</option>
           </select>
         </div>
         <div>
-          <label>Nacionalidade</label>
-          <input type="text" name="loc${n}_nacionalidade" value="Brasileiro(a)" />
+          <label>Nacionalidade <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_nacionalidade" value="Brasileiro(a)" required />
         </div>
         <div>
-          <label>Profissão</label>
-          <input type="text" name="loc${n}_profissao" />
+          <label>Profissão <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_profissao" required />
         </div>
         <div>
           <label>E-mail <span class="obrig">*</span></label>
@@ -683,34 +684,34 @@
           <input type="text" name="loc${n}_celular" placeholder="(00) 00000-0000" maxlength="15" data-mask="tel" required />
         </div>
         <div class="span3">
-          <label>Endereço atual completo</label>
-          <input type="text" name="loc${n}_endereco" placeholder="Rua, número, complemento, bairro" />
+          <label>Endereço atual completo <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_endereco" placeholder="Rua, número, complemento, bairro" required />
         </div>
         <div>
-          <label>CEP</label>
-          <input type="text" name="loc${n}_cep" placeholder="00000-000" maxlength="9" data-mask="cep" />
+          <label>CEP <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_cep" placeholder="00000-000" maxlength="9" data-mask="cep" required />
         </div>
         <div>
-          <label>Cidade</label>
-          <input type="text" name="loc${n}_cidade" />
+          <label>Cidade <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_cidade" required />
         </div>
         <div>
-          <label>Estado</label>
-          <select name="loc${n}_uf"><option value="">UF</option>${ufOpts}</select>
+          <label>Estado <span class="obrig">*</span></label>
+          <select name="loc${n}_uf" required><option value="">UF</option>${ufOpts}</select>
         </div>
         <hr class="separador span3" />
         <div class="span3"><strong style="font-size:.85rem;color:var(--primary)">📞 Contato de Emergência</strong></div>
         <div>
-          <label>Nome completo</label>
-          <input type="text" name="loc${n}_emerg_nome" />
+          <label>Nome completo <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_emerg_nome" required />
         </div>
         <div>
-          <label>Celular</label>
-          <input type="text" name="loc${n}_emerg_cel" placeholder="(00) 00000-0000" maxlength="15" data-mask="tel" />
+          <label>Celular <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_emerg_cel" placeholder="(00) 00000-0000" maxlength="15" data-mask="tel" required />
         </div>
         <div>
-          <label>Grau de parentesco</label>
-          <input type="text" name="loc${n}_emerg_parentesco" />
+          <label>Grau de parentesco <span class="obrig">*</span></label>
+          <input type="text" name="loc${n}_emerg_parentesco" required />
         </div>
         <hr class="separador span3" />
         <div>
